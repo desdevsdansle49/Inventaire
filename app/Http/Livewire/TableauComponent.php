@@ -4,14 +4,32 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Post;
+use Livewire\WithPagination;
 
 class TableauComponent extends Component
 {
-    public function render()
+
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+
+    public $perPage = 10;
+
+    public $query;
+
+    public $name;
+    public $quantity;
+
+    public function addItem()
     {
-        return view('livewire.tableau-component', [
-            'items' => POST::table('item')->get()
+        POST::table('item')->insert([
+            'name' => $this->name,
+            'quantity' => $this->quantity,
         ]);
+    }
+
+    public function updatingQuery()
+    {
+        $this->resetPage();
     }
 
     public function delete()
@@ -19,11 +37,11 @@ class TableauComponent extends Component
         POST::table('item')->where('Name', '=', 'Temp')->delete();
     }
 
-    public function add()
+
+    public function render()
     {
-        POST::table('item')->insert([
-            'Name' => 'Temp',
-            'Quantity' => 10
+        return view('livewire.tableau-component', [
+            'items' => POST::table('item')->where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage)
         ]);
     }
 }
