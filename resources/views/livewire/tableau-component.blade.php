@@ -28,14 +28,9 @@
                                 <label class="form-label">Quantity</label>
                                 <input wire:model="quantity" type="number" class="form-control">
                             </div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save changes</button>
                         </form>
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -84,7 +79,7 @@
                             <th>{{ $item->Quantity }}</th>
                             <th>
 
-                                <button class="btn" wire:click='delete'>Supprimer</button>
+                                <button class="btn" wire:click="remove('{{ $item->Name }}')">Supprimer</button>
 
                             </th>
                         </tr>

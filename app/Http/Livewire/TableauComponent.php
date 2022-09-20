@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Post;
 use Livewire\WithPagination;
+use Psy\Readline\Hoa\Console;
 
 class TableauComponent extends Component
 {
@@ -25,6 +26,8 @@ class TableauComponent extends Component
             'name' => $this->name,
             'quantity' => $this->quantity,
         ]);
+        $this->name = '';
+        $this->quantity = '';
     }
 
     public function updatingQuery()
@@ -32,9 +35,9 @@ class TableauComponent extends Component
         $this->resetPage();
     }
 
-    public function delete()
+    public function remove($test)
     {
-        POST::table('item')->where('Name', '=', 'Temp')->delete();
+        POST::table('item')->where('Name', '=', $test)->delete();
     }
 
 
