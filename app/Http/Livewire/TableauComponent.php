@@ -20,8 +20,21 @@ class TableauComponent extends Component
     public $name;
     public $quantity;
 
+    protected $rules = [
+        'name' => 'required',
+        'quantity' => 'required | numeric | gte:0 '
+    ];
+
+    protected $messages = [
+        'quantity.required' => 'Champ obligatoire',
+        'quantity.gte' => 'Champ >= 0',
+    ];
+
     public function addItem()
     {
+
+        $this->validate();
+
         POST::table('item')->insert([
             'name' => $this->name,
             'quantity' => $this->quantity,
@@ -35,9 +48,9 @@ class TableauComponent extends Component
         $this->resetPage();
     }
 
-    public function remove($test)
+    public function remove($name)
     {
-        POST::table('item')->where('Name', '=', $test)->delete();
+        POST::table('item')->where('Name', '=', $name)->delete();
     }
 
 

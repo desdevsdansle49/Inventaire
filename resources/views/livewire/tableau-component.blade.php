@@ -24,10 +24,20 @@
                                 <label class="form-label">Name</label>
                                 <input wire:model="name" type="text" class="form-control">
                             </div>
+                            @error('name')
+                                <div class="alert alert-danger p-2" role="alert">
+                                    Champ obligatoire
+                                </div>
+                            @enderror
                             <div class="mb-3">
                                 <label class="form-label">Quantity</label>
-                                <input wire:model="quantity" type="number" class="form-control">
+                                <input wire:model="quantity" type="text" class="form-control">
                             </div>
+                            @error('quantity')
+                                <div class="alert alert-danger p-2" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save changes</button>
                         </form>
