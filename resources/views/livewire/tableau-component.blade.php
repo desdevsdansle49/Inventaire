@@ -1,5 +1,6 @@
 <div>
     <main role="main" class="container">
+        
 
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -26,7 +27,7 @@
                             </div>
                             @error('name')
                                 <div class="alert alert-danger p-2" role="alert">
-                                    Champ obligatoire
+                                    {{ $message }}
                                 </div>
                             @enderror
                             <div class="mb-3">
@@ -87,6 +88,7 @@
                             <th>{{ $item->idItem }}</th>
                             <th>{{ $item->Name }}</th>
                             <th>{{ $item->Quantity }}</th>
+                            <th></th>
                             <th>
 
                                 <button class="btn" wire:click="remove('{{ $item->Name }}')">Supprimer</button>

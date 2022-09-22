@@ -21,11 +21,13 @@ class TableauComponent extends Component
     public $quantity;
 
     protected $rules = [
-        'name' => 'required',
+        'name' => 'required | unique:item',
         'quantity' => 'required | numeric | gte:0 '
     ];
 
     protected $messages = [
+        'name.required' => 'Champ obligatoire',
+        'name.unique' => 'Cette item existe déjà',
         'quantity.required' => 'Champ obligatoire',
         'quantity.gte' => 'Champ >= 0',
     ];
@@ -57,7 +59,8 @@ class TableauComponent extends Component
     public function render()
     {
         return view('livewire.tableau-component', [
-            'items' => POST::table('item')->where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage)
+            'items' => POST::table('item')->where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage),
+            'category' => POST::table('category')->get()
         ]);
     }
 }
