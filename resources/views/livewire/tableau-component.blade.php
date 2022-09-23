@@ -39,6 +39,11 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+                            <select wire:model.lazy="category" class="custom-select ">
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save changes</button>
                         </form>
@@ -88,10 +93,7 @@
                             <th>{{ $item->item_id }}</th>
                             <th>{{ $item->name }}</th>
                             <th>{{ $item->quantity }}</th>
-                            <th>
-
-                                {{ $item->category->name }}
-                            </th>
+                            <th>{{ $item->category->name }}</th>
                             <th>
 
                                 <button class="btn" wire:click="remove('{{ $item->name }}')">Supprimer</button>

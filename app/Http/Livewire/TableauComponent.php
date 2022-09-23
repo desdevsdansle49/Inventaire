@@ -20,6 +20,7 @@ class TableauComponent extends Component
 
     public $name;
     public $quantity;
+    public $category;
 
     protected $rules = [
         'name' => 'required | unique:items',
@@ -64,7 +65,7 @@ class TableauComponent extends Component
     {
         return view('livewire.tableau-component', [
             'items' => Item::where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage),
-            'category' => Category::get()
+            'categories' => Category::get()
         ]);
     }
 }
