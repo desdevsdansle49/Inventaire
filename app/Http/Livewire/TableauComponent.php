@@ -2,8 +2,9 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Category;
 use Livewire\Component;
-use App\Models\Post;
+use App\Models\Item;
 use Livewire\WithPagination;
 use Psy\Readline\Hoa\Console;
 
@@ -21,7 +22,7 @@ class TableauComponent extends Component
     public $quantity;
 
     protected $rules = [
-        'name' => 'required | unique:item',
+        'name' => 'required | unique:items',
         'quantity' => 'required | numeric | gte:0 '
     ];
 
@@ -35,11 +36,14 @@ class TableauComponent extends Component
     public function addItem()
     {
 
+
+
         $this->validate();
 
-        POST::table('item')->insert([
+        Item::insert([
             'name' => $this->name,
             'quantity' => $this->quantity,
+            'category_id' => 1
         ]);
         $this->name = '';
         $this->quantity = '';
@@ -52,15 +56,15 @@ class TableauComponent extends Component
 
     public function remove($name)
     {
-        POST::table('item')->where('Name', '=', $name)->delete();
+        Item::where('Name', '=', $name)->delete();
     }
 
 
     public function render()
     {
         return view('livewire.tableau-component', [
-            'items' => POST::table('item')->where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage),
-            'category' => POST::table('category')->get()
+            'items' => Item::where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage),
+            'category' => Category::get()
         ]);
     }
 }

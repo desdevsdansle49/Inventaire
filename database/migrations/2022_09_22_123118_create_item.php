@@ -13,12 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('item', function (Blueprint $table) {
-            $table->id('item_id');
+        Schema::create('items', function (Blueprint $table) {
+            $table->id();
             $table->string('name');
             $table->integer('quantity');
             $table->string('localisation')->nullable();
-            $table->foreignId('category_id')->nullable()->constrained('category');
+
+
+            // $table->unsignedBigInteger('category_id');
+            // $table->foreign('category_id')->references('category_id')->on('categorys');
+            $table->foreignId('category_id')->constrained();
+
+
+
             $table->timestamps();
         });
     }

@@ -1,6 +1,6 @@
 <div>
     <main role="main" class="container">
-        
+
 
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -85,13 +85,16 @@
                 <tbody>
                     @foreach ($items as $item)
                         <tr>
-                            <th>{{ $item->idItem }}</th>
-                            <th>{{ $item->Name }}</th>
-                            <th>{{ $item->Quantity }}</th>
-                            <th></th>
+                            <th>{{ $item->item_id }}</th>
+                            <th>{{ $item->name }}</th>
+                            <th>{{ $item->quantity }}</th>
                             <th>
 
-                                <button class="btn" wire:click="remove('{{ $item->Name }}')">Supprimer</button>
+                                {{ $item->category->name }}
+                            </th>
+                            <th>
+
+                                <button class="btn" wire:click="remove('{{ $item->name }}')">Supprimer</button>
 
                             </th>
                         </tr>
