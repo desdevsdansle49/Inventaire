@@ -39,13 +39,37 @@
                                     {{ $message }}
                                 </div>
                             @enderror
-                            <select wire:model.lazy="category" class="custom-select ">
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            @if ($inputCategory == false)
+                                <div>
+                                    <select wire:model="category" class="custom-select ">
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->name }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button wire:click="showInput" type="button" class="btn btn-secondary">Nouvelle
+                                        catégorie</button>
+                                    <button wire:click="removeCategory" type="button"
+                                        class="btn btn-secondary">-</button>
+                                </div>
+                            @else
+                                <div>
+                                    <div class="mb-3  border rounded p-3">
+                                        <label class="form-label">Catégorie</label>
+                                        <input wire:model="category" type="text" class="form-control mb-2">
+                                        <button wire:click="showInput" type="button"
+                                            class="btn btn-secondary">Annuler</button>
+                                        <button wire:click="addCategory" type="button"
+                                            class="btn btn-primary">Ajouter</button>
+
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div align="right">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -85,6 +109,7 @@
                         <th>Name</th>
                         <th>Number</th>
                         <th>Categorie</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,11 +118,12 @@
                             <th>{{ $item->item_id }}</th>
                             <th>{{ $item->name }}</th>
                             <th>{{ $item->quantity }}</th>
-                            <th>{{ $item->category->name }}</th>
-                            <th>
-
-                                <button class="btn" wire:click="remove('{{ $item->name }}')">Supprimer</button>
-
+                            @if ($item->category)
+                                <th>{{ $item->category->name }}</th>
+                            @else
+                                <th>-</th>
+                            @endif
+                            <th><button class="btn" wire:click="remove('{{ $item->name }}')">Supprimer</button>
                             </th>
                         </tr>
                     @endforeach
