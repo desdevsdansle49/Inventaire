@@ -48,6 +48,7 @@
                                 {{ $message }}
                             </div>
                         @enderror
+                        <label class="form-label">Catégorie</label>
                         @if ($inputCategory == false)
                             <div>
                                 <select wire:model="category" class="custom-select ">
@@ -55,8 +56,7 @@
                                         <option value="{{ $category->name }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
-                                <button wire:click="showInput" type="button" class="btn btn-secondary">Nouvelle
-                                    catégorie</button>
+                                <button wire:click="showInput" type="button" class="btn btn-secondary">+</button>
                                 <button wire:click="removeCategory" type="button" class="btn btn-secondary">-</button>
                             </div>
                         @else
@@ -76,6 +76,8 @@
                         <div align="right">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             @if ($fromEdit)
+                                <button wire:click="remove" class="btn btn-danger"
+                                    data-bs-dismiss="modal">supprimer</button>
                                 <button type="submite" class="btn btn-primary">Save changes</button>
                             @else
                                 <button type="submit" class="btn btn-primary">Ajouter</button>

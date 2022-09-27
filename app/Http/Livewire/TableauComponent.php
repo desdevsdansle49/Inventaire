@@ -22,6 +22,7 @@ class TableauComponent extends Component
 
     public $inputCategory = false;
     public $fromEdit;
+    public $reddo;
     //
 
     //interaction db
@@ -62,9 +63,7 @@ class TableauComponent extends Component
         ]);
         if ($this->fromEdit == false) {
 
-            $this->name = '';
-            $this->quantity = '';
-            $this->category = '-';
+            $this->clear();
         }
     }
 
@@ -90,9 +89,11 @@ class TableauComponent extends Component
     public function remove()
     {
         Item::where('Name', '=', $this->name)->delete();
-        if ($this->fromEdit) {
+        if ($this->fromEdit && $this->reddo) {
             $this->addItem();
         }
+        $this->reddo = true;
+        $this->clear();
     }
 
     // 
@@ -109,12 +110,23 @@ class TableauComponent extends Component
 
     //rendering
 
+    public function clear()
+    {
+        $this->name = '';
+        $this->quantity = '';
+        $this->category = '-';
+    }
+
+    public function idfk()
+    {
+        $this->reddo = false;
+        $this->remove();
+    }
+
     public function false()
     {
         $this->fromEdit = false;
-        $this->name = '';
-        $this->quantity = '';
-        $this->category = '-'; 
+        $this->clear();
     }
 
 
