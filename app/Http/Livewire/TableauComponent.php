@@ -21,6 +21,7 @@ class TableauComponent extends Component
     public $query;
 
     public $inputCategory = false;
+    public $fromEdit;
     //
 
     //interaction db
@@ -59,9 +60,12 @@ class TableauComponent extends Component
             'quantity' => $this->quantity,
             'category_id' => (Category::where('name', 'like', $this->category_id)->get('id'))[0]->id
         ]);
-        $this->name = '';
-        $this->quantity = '';
-        $this->category = '-';
+        if ($this->fromEdit == false) {
+
+            $this->name = '';
+            $this->quantity = '';
+            $this->category = '-';
+        }
     }
 
     public function addCategory()
@@ -83,16 +87,36 @@ class TableauComponent extends Component
         Category::where('Name', '=', $this->category)->delete();
     }
 
-    public function remove($name)
+    public function remove()
     {
-        Item::where('Name', '=', $name)->delete();
+        Item::where('Name', '=', $this->name)->delete();
+        if ($this->fromEdit) {
+            $this->addItem();
+        }
     }
 
     // 
 
+    public function defineData($category, $name, $quantity)
+    {
+        $this->fromEdit = true;
+        $this->category = $category;
+        $this->name = $name;
+        $this->quantity = $quantity;
+    }
+
 
 
     //rendering
+
+    public function false()
+    {
+        $this->fromEdit = false;
+        $this->name = '';
+        $this->quantity = '';
+        $this->category = '-'; 
+    }
+
 
     public function updatingQuery()
     {

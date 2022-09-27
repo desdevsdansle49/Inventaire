@@ -3,7 +3,8 @@
 
 
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" wire:click="false" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">
             Launch demo modal
         </button>
 
@@ -13,62 +14,73 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Item</h5>
+                        @if ($fromEdit)
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $name }}</h5>
+                        @else
+                            <h5 class="modal-title" id="exampleModalLabel">New Item</h5>
+                        @endif
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
 
                         {{-- form --}}
-                        <form wire:submit.prevent="addItem">
-                            <div class="mb-3">
-                                <label class="form-label">Name</label>
-                                <input wire:model="name" type="text" class="form-control">
-                            </div>
-                            @error('name')
-                                <div class="alert alert-danger p-2" role="alert">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            <div class="mb-3">
-                                <label class="form-label">Quantity</label>
-                                <input wire:model="quantity" type="text" class="form-control">
-                            </div>
-                            @error('quantity')
-                                <div class="alert alert-danger p-2" role="alert">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            @if ($inputCategory == false)
-                                <div>
-                                    <select wire:model="category" class="custom-select ">
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->name }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <button wire:click="showInput" type="button" class="btn btn-secondary">Nouvelle
-                                        catégorie</button>
-                                    <button wire:click="removeCategory" type="button"
-                                        class="btn btn-secondary">-</button>
-                                </div>
+                        @if ($fromEdit)
+                            <form wire:submit.prevent="remove">
                             @else
-                                <div>
-                                    <div class="mb-3  border rounded p-3">
-                                        <label class="form-label">Catégorie</label>
-                                        <input wire:model="category" type="text" class="form-control mb-2">
-                                        <button wire:click="showInput" type="button"
-                                            class="btn btn-secondary">Annuler</button>
-                                        <button wire:click="addCategory" type="button"
-                                            class="btn btn-primary">Ajouter</button>
-
-                                    </div>
-                                </div>
-                            @endif
-
-                            <div align="right">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                <form wire:submit.prevent="addItem">
+                        @endif
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input wire:model="name" type="text" class="form-control">
+                        </div>
+                        @error('name')
+                            <div class="alert alert-danger p-2" role="alert">
+                                {{ $message }}
                             </div>
+                        @enderror
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input wire:model="quantity" type="text" class="form-control">
+                        </div>
+                        @error('quantity')
+                            <div class="alert alert-danger p-2" role="alert">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                        @if ($inputCategory == false)
+                            <div>
+                                <select wire:model="category" class="custom-select ">
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->name }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button wire:click="showInput" type="button" class="btn btn-secondary">Nouvelle
+                                    catégorie</button>
+                                <button wire:click="removeCategory" type="button" class="btn btn-secondary">-</button>
+                            </div>
+                        @else
+                            <div>
+                                <div class="mb-3  border rounded p-3">
+                                    <label class="form-label">Catégorie</label>
+                                    <input wire:model="category" type="text" class="form-control mb-2">
+                                    <button wire:click="showInput" type="button"
+                                        class="btn btn-secondary">Annuler</button>
+                                    <button wire:click="addCategory" type="button"
+                                        class="btn btn-primary">Ajouter</button>
+
+                                </div>
+                            </div>
+                        @endif
+
+                        <div align="right">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            @if ($fromEdit)
+                                <button type="submite" class="btn btn-primary">Save changes</button>
+                            @else
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            @endif
+                        </div>
 
                         </form>
                     </div>
@@ -109,7 +121,7 @@
                         <th>Name</th>
                         <th>Number</th>
                         <th>Categorie</th>
-                        <th>Delete</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -123,7 +135,9 @@
                             @else
                                 <th>-</th>
                             @endif
-                            <th><button class="btn" wire:click="remove('{{ $item->name }}')">Supprimer</button>
+                            <th><button class="btn"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}')"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
                             </th>
                         </tr>
                     @endforeach
