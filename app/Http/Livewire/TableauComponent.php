@@ -27,6 +27,7 @@ class TableauComponent extends Component
     //interaction db
 
     public $name;
+    public $nameForEdit;
     public $quantity;
     public $category = '-';
     public $category_id;
@@ -94,14 +95,16 @@ class TableauComponent extends Component
 
     public function edit()
     {
-        Item::where('Name', '=', $this->name)->delete();
+        Item::where('Name', '=', $this->nameForEdit)->delete();
         $this->addItem();
+        $this->nameForEdit = $this->name;
     }
 
     // 
 
     public function defineData($category, $name, $quantity)
     {
+        $this->nameForEdit = $name;
         $this->fromEdit = true;
         $this->category = $category;
         $this->name = $name;
