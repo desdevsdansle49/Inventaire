@@ -22,7 +22,6 @@ class TableauComponent extends Component
 
     public $inputCategory = false;
     public $fromEdit;
-    public $reddo;
     //
 
     //interaction db
@@ -82,6 +81,7 @@ class TableauComponent extends Component
         if ($this->category == '-') {
             return;
         }
+
         Item::where('category_id', '=', Category::where('name', '=', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '=', '-')->get('id')[0]->id]);
         Category::where('Name', '=', $this->category)->delete();
     }
@@ -89,11 +89,13 @@ class TableauComponent extends Component
     public function remove()
     {
         Item::where('Name', '=', $this->name)->delete();
-        if ($this->fromEdit && $this->reddo) {
-            $this->addItem();
-        }
-        $this->reddo = true;
         $this->clear();
+    }
+
+    public function edit()
+    {
+        Item::where('Name', '=', $this->name)->delete();
+        $this->addItem();
     }
 
     // 
@@ -115,12 +117,6 @@ class TableauComponent extends Component
         $this->name = '';
         $this->quantity = '';
         $this->category = '-';
-    }
-
-    public function idfk()
-    {
-        $this->reddo = false;
-        $this->remove();
     }
 
     public function false()
@@ -146,7 +142,7 @@ class TableauComponent extends Component
     {
         return view('livewire.tableau-component', [
             'items' => Item::where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage),
-            'categories' => Category::orderBy('name', 'ASC')->get()
+            'categories' => Category::orderBy('name', 'ASC')->get(),
         ]);
     }
 

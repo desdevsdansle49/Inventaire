@@ -5,8 +5,9 @@
         <!-- Button trigger modal -->
         <button type="button" wire:click="false" class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#exampleModal">
-            Launch demo modal
+            Nouvelle item
         </button>
+
 
         <!-- Modal -->
         <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -25,9 +26,9 @@
 
 
                         {{-- form --}}
-                        <div wire:loading.remove>
+                        <div>
                             @if ($fromEdit)
-                                <form wire:submit.prevent="remove">
+                                <form wire:submit.prevent>
                                 @else
                                     <form wire:submit.prevent="addItem">
                             @endif
@@ -76,12 +77,16 @@
                             @endif
 
 
-                            <div align="right">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <div class="d-flex justify-content-sm-end">
+                                <button type="button" class="btn btn-secondary me-1"
+                                    data-bs-dismiss="modal">Close</button>
+
                                 @if ($fromEdit)
-                                    <button wire:click="remove" class="btn btn-danger"
-                                        data-bs-dismiss="modal">supprimer</button>
-                                    <button type="submite" class="btn btn-primary">Save changes</button>
+                                    <div>
+                                        <button wire:click="remove" class="btn btn-danger"
+                                            data-bs-dismiss="modal">supprimer</button>
+                                        <button wire:click="edit" class="btn btn-primary">Save changes</button>
+                                    </div>
                                 @else
                                     <button type="submit" class="btn btn-primary">Ajouter</button>
                                 @endif
