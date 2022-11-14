@@ -44,6 +44,7 @@ class TableauComponent extends Component
         'name' => 'required | unique:items',
         'quantity' => 'required | numeric | gte:0 ',
         'category_id' => 'required | unique:items',
+        'lowest' => 'numeric | gte:0  '
     ];
 
     protected $messages = [
@@ -51,6 +52,7 @@ class TableauComponent extends Component
         'name.unique' => 'Cette item existe déjà',
         'quantity.required' => 'Champ obligatoire',
         'quantity.gte' => 'Champ >= 0',
+
     ];
 
     public function addItem()

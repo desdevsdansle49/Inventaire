@@ -51,6 +51,15 @@
                                 </div>
                             @enderror
                             <div class="mb-3">
+                                <label class="form-label">Lowest</label>
+                                <input wire:model="lowest" type="text" class="form-control">
+                            </div>
+                            @error('lowest')
+                                <div class="alert alert-danger p-2" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="mb-3">
                                 <label class="form-label">Bar code</label>
                                 <input wire:model="barcode" type="text" class="form-control">
                             </div>
@@ -129,12 +138,6 @@
 
         <h2 class="mt-5 text-center">Tableau</h2>
 
-        @foreach ($items as $item)
-            @if ($item->quantity < $item->lowest)
-                <h1>{{ $item->name }}</h1>
-            @endif
-        @endforeach
-
 
 
         <div class="d-flex flex-row-reverse mr-5 mb-3 justify-content-between">
@@ -164,6 +167,7 @@
                         <th>Number</th>
                         <th>Categorie</th>
                         <th>Edit</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -188,6 +192,11 @@
                                     wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}')"
                                     data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
                             </th>
+                            @if ($item->quantity < $item->lowest)
+                                <th>⚠</th>
+                            @else
+                                <th></th>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

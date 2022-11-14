@@ -15,10 +15,11 @@
 
 </head>
 
+
 <body>
     <div class=" pb-3 mb-4 bg-dark d-flex justify-content-around h1">
         <a href="/">Liste</a>
-        <a href="#">Alertes</a>
+        <a href="/alerts">Alertes</a>
         <a href="/stats">Stats</a>
 
     </div>

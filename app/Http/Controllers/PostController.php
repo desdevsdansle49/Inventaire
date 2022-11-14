@@ -16,4 +16,9 @@ class PostController extends Controller
     {
         return view('stats');
     }
+
+    public function alerts()
+    {
+        return view('alerts');
+    }
 }
