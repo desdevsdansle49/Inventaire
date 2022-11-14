@@ -2,14 +2,14 @@
     <main role="main" class="container">
 
 
-        <!-- Button trigger modal -->
+        <!-- add button -->
         <button type="button" wire:click="false" class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#exampleModal">
             Nouvelle item
         </button>
 
 
-        <!-- Modal -->
+        <!-- Modal add/edit -->
         <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -50,6 +50,10 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+                            <div class="mb-3">
+                                <label class="form-label">Bar code</label>
+                                <input wire:model="barcode" type="text" class="form-control">
+                            </div>
                             <label class="form-label">Catégorie</label>
                             @if ($inputCategory == false)
                                 <div>
@@ -59,8 +63,9 @@
                                         @endforeach
                                     </select>
                                     <button wire:click="showInput" type="button" class="btn btn-secondary">+</button>
-                                    <button wire:click="removeCategory" type="button"
-                                        class="btn btn-secondary">-</button>
+                                    <button
+                                        onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
+                                        wire:click="removeCategory" type="button" class="btn btn-secondary">-</button>
                                 </div>
                             @else
                                 <div>
@@ -75,6 +80,7 @@
                                     </div>
                                 </div>
                             @endif
+
 
 
                             <div class="d-flex justify-content-sm-end">
@@ -101,8 +107,33 @@
 
 
 
+        <!-- Modal -->
+        <div wire:ignore.self class="modal fade" id="numberModal" tabindex="-1" aria-labelledby="numberModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="numberModalLabel">{{ $name }} - {{ $quantity }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <h2 class="mt-5 text-center">Tableau</h2>
 
+        @foreach ($items as $item)
+            @if ($item->quantity < $item->lowest)
+                <h1>{{ $item->name }}</h1>
+            @endif
+        @endforeach
 
 
 
@@ -140,14 +171,21 @@
                         <tr>
                             <th>{{ $item->item_id }}</th>
                             <th>{{ $item->name }}</th>
-                            <th>{{ $item->quantity }}</th>
+                            <th>
+                                <button class="btn"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}')"
+                                    data-bs-toggle="modal" data-bs-target="#numberModal">
+                                    {{ $item->quantity }}
+                                </button>
+                            </th>
+
                             @if ($item->category)
                                 <th>{{ $item->category->name }}</th>
                             @else
                                 <th>-</th>
                             @endif
                             <th><button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}')"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}')"
                                     data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
                             </th>
                         </tr>

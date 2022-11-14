@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('quantity');
+            $table->string('barcode')->nullable();
+            $table->integer('lowest')->nullable();
             $table->string('localisation')->nullable();
 
             $table->timestamps();

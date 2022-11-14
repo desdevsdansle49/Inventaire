@@ -1,5 +1,5 @@
 @extends('layouts/home')
 
 @section('content')
-    <h1>work in progress </h1>
+    <h5>work in progress</h5>
 @endsection

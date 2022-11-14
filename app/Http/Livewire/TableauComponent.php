@@ -31,6 +31,9 @@ class TableauComponent extends Component
     public $quantity;
     public $category = '-';
     public $category_id;
+    public $barcode;
+    public $lowest;
+    protected $result;
 
 
     //
@@ -56,9 +59,15 @@ class TableauComponent extends Component
         $this->category_id = $this->category;
         $this->validate();
 
+        if (!$this->lowest) {
+            $this->lowest = 0;
+        }
+
         Item::insert([
             'name' => $this->name,
             'quantity' => $this->quantity,
+            'barcode' => $this->barcode,
+            'lowest' => $this->lowest,
             'category_id' => (Category::where('name', 'like', $this->category_id)->get('id'))[0]->id
         ]);
         if ($this->fromEdit == false) {
@@ -102,13 +111,15 @@ class TableauComponent extends Component
 
     // 
 
-    public function defineData($category, $name, $quantity)
+    public function defineData($category, $name, $quantity, $barcode, $lowest)
     {
         $this->nameForEdit = $name;
         $this->fromEdit = true;
         $this->category = $category;
         $this->name = $name;
         $this->quantity = $quantity;
+        $this->barcode = $barcode;
+        $this->lowest = $lowest;
     }
 
 
@@ -119,7 +130,9 @@ class TableauComponent extends Component
     {
         $this->name = '';
         $this->quantity = '';
+        $this->barcode = '';
         $this->category = '-';
+        $this->lowest = '';
     }
 
     public function false()
@@ -143,8 +156,22 @@ class TableauComponent extends Component
 
     public function render()
     {
+        //si une category == query exist on ajoute a la recherche sinon on recherche que les items par nom
+        if (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
+            $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
+                ->orWhere('Barcode', '=', $this->query)
+                ->orWhere('category_id', 'like', (Category::where('Name', 'like', '%' . $this->query . '%')->get('id')[0]->id))
+                ->orderBy('name', 'ASC')
+                ->paginate($this->perPage);
+        } else {
+            $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
+                ->orWhere('Barcode', '=', $this->query)
+                ->orderBy('name', 'ASC')
+                ->paginate($this->perPage);
+        }
+
         return view('livewire.tableau-component', [
-            'items' => Item::where('Name', 'like', '%' . $this->query . '%')->paginate($this->perPage),
+            'items' => $this->result,
             'categories' => Category::orderBy('name', 'ASC')->get(),
         ]);
     }
