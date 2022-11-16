@@ -10,15 +10,18 @@
 
 
     <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
 </head>
 
 <style>
     @font-face {
-        font-family: 'QuickSand';
-        src: url('Quicksand-VariableFont_wght.tff');
+        font-family: 'Quicksand-Light';
+        src: url("{{ asset('fonts/Quicksand-Light.woff2') }}") format('woff2'),
+            url("{{ asset('fonts/Quicksand-Light.woff') }}") format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
     }
 
 
@@ -33,12 +36,12 @@
     a {
         color: white;
         text-decoration: none;
-        font-family: 'QuickSand', sans-serif;
+        font-family: 'Quicksand-Light', sans-serif;
     }
 
     h2 {
 
-        font-family: 'QuickSand', sans-serif;
+        font-family: 'Quicksand-Light', sans-serif;
     }
 
     table {
@@ -92,9 +95,7 @@
 
 
     <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
-    </script>
+    <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
 
 </body>
 
