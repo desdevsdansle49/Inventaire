@@ -161,10 +161,12 @@
                 </select>
                 Show
             </div>
-            <div>
+            <div class="d-flex align-items-center">
                 <label for="query" class="visually-hidden">Search</label>
-                <input type="search" wire:model="query" id="query" class="form-control w-auto"
+                <input type="search" wire:model="query" id="query" class="form-control w-auto "
                     placeholder="recherche">
+                <input class="ms-3 me-1" wire:model='alerte'type="checkbox" id="alerte" name="alerte">
+                <label for="alerte">Alerte</label>
             </div>
         </div>
 

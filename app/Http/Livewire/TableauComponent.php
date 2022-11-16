@@ -23,6 +23,8 @@ class TableauComponent extends Component
     public $inputCategory = false;
     public $fromEdit;
 
+    public $alerte = false;
+
     //
 
     //interaction db
@@ -170,8 +172,17 @@ class TableauComponent extends Component
 
     public function render()
     {
+        if ($this->alerte == true) {
+            $this->result = Item::whereRaw('quantity < lowest')
+                ->where(function ($query) {
+                    $query->where('Name', 'like', '%' . $this->query . '%')
+                        ->orWhere('Barcode', '=', $this->query);
+                })
+                ->orderBy('name', 'ASC')
+                ->paginate($this->perPage);
+        }
         //si une category == query exist on ajoute a la recherche sinon on recherche que les items par nom
-        if (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
+        elseif (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
             $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
                 ->orWhere('Barcode', '=', $this->query)
                 ->orWhere('category_id', 'like', (Category::where('Name', 'like', '%' . $this->query . '%')->get('id')[0]->id))

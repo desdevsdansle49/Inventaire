@@ -16,7 +16,11 @@
 </head>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap');
+    @font-face {
+        font-family: 'QuickSand';
+        src: url('Quicksand-VariableFont_wght.tff');
+    }
+
 
     tr:nth-child(even) {
         background-color: aliceblue;
@@ -74,9 +78,8 @@
 </style>
 
 <body>
-    <div class="d-flex pb-2 mb-4 pt-2 bg-dark h2 align-items-center ">
-        <img width="10%"
-            height="10%"src="https://www.devenirpolicier.fr/themes/custom/police_theme/images/logo-policenationale-txtblanc.png" />
+    <div class="d-flex pb-2 mb-4 pt-2 bg-dark h2">
+        <img width="10%" height="10%" src="{{ asset('logo-police.png') }}" />
         <a class="ps-5" href="/">Liste</a>
         <a class="ps-5" href="/stats">Stats</a>
     </div>
