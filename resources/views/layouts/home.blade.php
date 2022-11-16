@@ -15,13 +15,70 @@
 
 </head>
 
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap');
+
+    tr:nth-child(even) {
+        background-color: aliceblue;
+    }
+
+    body {
+        background-color: darkgrey;
+    }
+
+    a {
+        color: white;
+        text-decoration: none;
+        font-family: 'QuickSand', sans-serif;
+    }
+
+    h2 {
+
+        font-family: 'QuickSand', sans-serif;
+    }
+
+    table {
+        table-layout: fixed;
+        width: 200px;
+    }
+
+    th,
+    td {
+        width: 100px;
+        overflow: hidden;
+    }
+
+    .th1 {
+        width: 10px;
+    }
+
+    .th2 {
+        width: 110px;
+    }
+
+    .th3 {
+        width: 50px;
+    }
+
+    .th4 {
+        width: 100px;
+    }
+
+    .th5 {
+        width: 50px;
+    }
+
+    .th6 {
+        width: 10px;
+    }
+</style>
 
 <body>
-    <div class=" pb-3 mb-4 bg-dark d-flex justify-content-around h1">
-        <a href="/">Liste</a>
-        <a href="/alerts">Alertes</a>
-        <a href="/stats">Stats</a>
-
+    <div class="d-flex pb-2 mb-4 pt-2 bg-dark h2 align-items-center ">
+        <img width="10%"
+            height="10%"src="https://www.devenirpolicier.fr/themes/custom/police_theme/images/logo-policenationale-txtblanc.png" />
+        <a class="ps-5" href="/">Liste</a>
+        <a class="ps-5" href="/stats">Stats</a>
     </div>
 
 

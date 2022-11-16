@@ -1,12 +1,8 @@
-<div>
+<div class="bg-white rounded p-5 m-4">
     <main role="main" class="container">
 
 
-        <!-- add button -->
-        <button type="button" wire:click="false" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">
-            Nouvelle item
-        </button>
+
 
 
         <!-- Modal add/edit -->
@@ -28,7 +24,8 @@
                         {{-- form --}}
                         <div>
                             @if ($fromEdit)
-                                <form wire:submit.prevent>
+                                <form wire:submit.prevent wire:keydown.enter='edit'
+                                    onkeydown="return event.key != 'Enter';">
                                 @else
                                     <form wire:submit.prevent="addItem">
                             @endif
@@ -122,22 +119,36 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="numberModalLabel">{{ $name }} - {{ $quantity }}</h5>
+                        <h5 class="modal-title" id="numberModalLabel"> {{ $quantity }} - {{ $name }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <div class="mb-3 d-flex justify-content-center align-items-center">
+                            <div height-10>
+                                <button data-bs-dismiss="modal" wire:click="addQuantity('-')" type="button"
+                                    class="btn btn-secondary"> -
+                                </button>
+                            </div>
+                            <input wire:model="addQuantity" style="width: 150px;" type="text"
+                                class="m-2 form-control" />
+                            <div class="height-10">
+                                <button wire:click="addQuantity('+')" type="button"
+                                    class="btn btn-secondary">+</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <h2 class="mt-2 text-center">Inventaire</h2>
 
-        <h2 class="mt-5 text-center">Tableau</h2>
 
+        <!-- add button -->
+        <button type="button" wire:click="false" class="btn btn-primary mb-3" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">
+            Nouvelle item
+        </button>
 
 
         <div class="d-flex flex-row-reverse mr-5 mb-3 justify-content-between">
@@ -162,19 +173,19 @@
             <table class="table">
                 <thead class="table-dark">
                     <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Number</th>
-                        <th>Categorie</th>
-                        <th>Edit</th>
-                        <th></th>
+                        <th class="th1"></th>
+                        <th class="th2">Name</th>
+                        <th class="th3">Number</th>
+                        <th class="th4">Categorie</th>
+                        <th class="th5">Edit</th>
+                        <th class="th6"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($items as $item)
                         <tr>
-                            <th>{{ $item->item_id }}</th>
-                            <th>{{ $item->name }}</th>
+                            <th></th>
+                            <th class="fw-normal">{{ $item->name }}</th>
                             <th>
                                 <button class="btn"
                                     wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}')"
@@ -184,13 +195,13 @@
                             </th>
 
                             @if ($item->category)
-                                <th>{{ $item->category->name }}</th>
+                                <th class="fw-normal">{{ $item->category->name }}</th>
                             @else
                                 <th>-</th>
                             @endif
                             <th><button class="btn"
                                     wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}')"
-                                    data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+                                    data-bs-toggle="modal" data-bs-target="#exampleModal">⚙</button>
                             </th>
                             @if ($item->quantity < $item->lowest)
                                 <th>⚠</th>

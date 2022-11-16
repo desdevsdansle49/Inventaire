@@ -22,6 +22,7 @@ class TableauComponent extends Component
 
     public $inputCategory = false;
     public $fromEdit;
+
     //
 
     //interaction db
@@ -34,6 +35,7 @@ class TableauComponent extends Component
     public $barcode;
     public $lowest;
     protected $result;
+    public $addQuantity;
 
 
     //
@@ -96,6 +98,16 @@ class TableauComponent extends Component
 
         Item::where('category_id', '=', Category::where('name', '=', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '=', '-')->get('id')[0]->id]);
         Category::where('Name', '=', $this->category)->delete();
+    }
+
+    public function addQuantity($PorM)
+    {
+        if ($PorM == "-") {
+            Item::where('name', '=', $this->name)->decrement('quantity', $this->addQuantity);
+        } else if ($PorM == "+") {
+            Item::where('name', '=', $this->name)->increment('quantity', $this->addQuantity);
+        }
+        $this->addQuantity = "";
     }
 
     public function remove()
