@@ -38,27 +38,41 @@
                                     {{ $message }}
                                 </div>
                             @enderror
-                            <div class="mb-3">
-                                <label class="form-label">Quantity</label>
-                                <input wire:model="quantity" type="text" class="form-control">
-                            </div>
-                            @error('quantity')
-                                <div class="alert alert-danger p-2" role="alert">
-                                    {{ $message }}
+                            <div class="d-flex justify-content-between">
+                                <div class="mb-3">
+                                    <label class="form-label">Quantity</label>
+                                    <input wire:model="quantity" type="text" class="form-control">
                                 </div>
-                            @enderror
-                            <div class="mb-3">
-                                <label class="form-label">Lowest</label>
-                                <input wire:model="lowest" type="text" class="form-control">
-                            </div>
-                            @error('lowest')
-                                <div class="alert alert-danger p-2" role="alert">
-                                    {{ $message }}
+
+                                <div class="mb-3">
+                                    <label class="form-label">Lowest</label>
+                                    <input wire:model="lowest" type="text" class="form-control">
                                 </div>
-                            @enderror
+
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                @error('quantity')
+                                    <div class="alert alert-danger p-2" role="alert">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                @error('lowest')
+                                    <div class="alert alert-danger p-2" role="alert">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                             <div class="mb-3">
                                 <label class="form-label">Bar code</label>
                                 <input wire:model="barcode" type="text" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Fournisseur</label>
+                                <input wire:model="fournisseur" type="text" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Note</label>
+                                <textarea rows="3" wire:model="note" class="form-control"></textarea>
                             </div>
                             <label class="form-label">Catégorie</label>
                             @if ($inputCategory == false)
@@ -113,14 +127,15 @@
 
 
 
-        <!-- Modal -->
+        <!-- Modal Quantity -->
         <div wire:ignore.self class="modal fade" id="numberModal" tabindex="-1" aria-labelledby="numberModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="numberModalLabel"> {{ $quantity }} - {{ $name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3 d-flex justify-content-center align-items-center">
@@ -136,6 +151,23 @@
                                     class="btn btn-secondary">+</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Note -->
+        <div wire:ignore.self class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="noteModalLabel">{{ $name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ $note }}</p>
                     </div>
                 </div>
             </div>
@@ -179,8 +211,10 @@
                         <th class="th2">Name</th>
                         <th class="th3">Number</th>
                         <th class="th4">Categorie</th>
-                        <th class="th5">Edit</th>
-                        <th class="th6"></th>
+                        <th class="th5">Fournisseur</th>
+                        <th class="th6">Note</th>
+                        <th class="th7">Edit</th>
+                        <th class="th8"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -190,7 +224,7 @@
                             <th class="fw-normal">{{ $item->name }}</th>
                             <th>
                                 <button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}')"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
                                     data-bs-toggle="modal" data-bs-target="#numberModal">
                                     {{ $item->quantity }}
                                 </button>
@@ -201,8 +235,12 @@
                             @else
                                 <th>-</th>
                             @endif
+                            <th class="fw-normal">{{ $item->fournisseur }}</th>
                             <th><button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}')"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
+                                    data-bs-toggle="modal" data-bs-target="#noteModal">...</button>
+                            <th><button class="btn"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
                                     data-bs-toggle="modal" data-bs-target="#exampleModal">⚙</button>
                             </th>
                             @if ($item->quantity < $item->lowest)

@@ -49,10 +49,12 @@
         width: 200px;
     }
 
+
     th,
     td {
         width: 100px;
         overflow: hidden;
+        vertical-align: middle;
     }
 
     .th1 {
@@ -64,7 +66,7 @@
     }
 
     .th3 {
-        width: 50px;
+        width: 60px;
     }
 
     .th4 {
@@ -72,11 +74,19 @@
     }
 
     .th5 {
-        width: 50px;
+        width: 70px;
     }
 
     .th6 {
-        width: 10px;
+        width: 40px;
+    }
+
+    .th7 {
+        width: 40px;
+    }
+
+    .th8 {
+        width: 20px;
     }
 </style>
 

@@ -38,6 +38,8 @@ class TableauComponent extends Component
     public $lowest;
     protected $result;
     public $addQuantity;
+    public $fournisseur;
+    public $note;
 
 
     //
@@ -74,6 +76,8 @@ class TableauComponent extends Component
             'quantity' => $this->quantity,
             'barcode' => $this->barcode,
             'lowest' => $this->lowest,
+            'fournisseur' => $this->fournisseur,
+            'note' => $this->note,
             'category_id' => (Category::where('name', 'like', $this->category_id)->get('id'))[0]->id
         ]);
         if ($this->fromEdit == false) {
@@ -127,7 +131,7 @@ class TableauComponent extends Component
 
     // 
 
-    public function defineData($category, $name, $quantity, $barcode, $lowest)
+    public function defineData($category, $name, $quantity, $barcode, $lowest, $fournisseur, $note)
     {
         $this->nameForEdit = $name;
         $this->fromEdit = true;
@@ -136,6 +140,8 @@ class TableauComponent extends Component
         $this->quantity = $quantity;
         $this->barcode = $barcode;
         $this->lowest = $lowest;
+        $this->fournisseur = $fournisseur;
+        $this->note = $note;
     }
 
 
@@ -149,6 +155,9 @@ class TableauComponent extends Component
         $this->barcode = '';
         $this->category = '-';
         $this->lowest = '';
+        $this->fournisseur = '';
+        $this->note = '';
+        $this->resetValidation();
     }
 
     public function false()
