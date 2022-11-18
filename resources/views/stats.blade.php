@@ -1,5 +1,5 @@
 @extends('layouts/home')
 
 @section('content')
-    <h5>work in progress</h5>
+    <h5>Module non crée pour le moment</h5>
 @endsection

@@ -185,13 +185,12 @@
 
         <div class="d-flex flex-row-reverse mr-5 mb-3 justify-content-between">
             <div>
-                per page
+                Elements par page :
                 <select wire:model.lazy="perPage" class="custom-select ">
                     @for ($i = 5; $i <= 25; $i += 5)
                         <option value="{{ $i }}">{{ $i }}</option>
                     @endfor
                 </select>
-                Show
             </div>
             <div class="d-flex align-items-center">
                 <label for="query" class="visually-hidden">Search</label>
@@ -208,12 +207,12 @@
                 <thead class="table-dark">
                     <tr>
                         <th class="th1"></th>
-                        <th class="th2">Name</th>
-                        <th class="th3">Number</th>
+                        <th class="th2">Nom</th>
+                        <th class="th3">Quantité</th>
                         <th class="th4">Categorie</th>
                         <th class="th5">Fournisseur</th>
                         <th class="th6">Note</th>
-                        <th class="th7">Edit</th>
+                        <th class="th7">Editer</th>
                         <th class="th8"></th>
                     </tr>
                 </thead>
