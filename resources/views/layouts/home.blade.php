@@ -91,19 +91,14 @@
 </style>
 
 <body>
-    <div class="d-flex pb-2 mb-4 pt-2 bg-dark h2">
-        <img width="10%" height="10%" src="{{ asset('logo-police.png') }}" />
-        <a class="ps-5" href="/">Liste</a>
-        <a class="ps-5" href="/stats">Stats</a>
-    </div>
+    <!-- Header -->
+    @livewire('navigation-menu')
 
-
+    <!-- Content -->
     @yield('content')
 
     @livewireScripts
-
-
-
+    
     <!-- JavaScript Bundle with Popper -->
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
 
