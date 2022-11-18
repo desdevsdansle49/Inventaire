@@ -47,7 +47,7 @@ class TableauComponent extends Component
 
     //interaction db
     protected $rules = [
-        'name' => 'required | unique:items',
+        'name' => 'required | unique:items| String',
         'quantity' => 'required | numeric | gte:0 ',
         'category_id' => 'required | unique:items',
         'lowest' => 'numeric | gte:0  '
