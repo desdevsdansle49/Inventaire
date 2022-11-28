@@ -107,11 +107,14 @@ class TableauComponent extends Component
         Category::where('Name', '=', $this->category)->delete();
     }
 
-    public function addQuantity()
+    public function addQuantity($PorM)
     {
-
         if (is_numeric($this->addQuantity)) {
-            Item::where('name', '=', $this->name)->increment('quantity', $this->addQuantity);
+            if ($PorM == "-") {
+                Item::where('name', '=', $this->name)->decrement('quantity', $this->addQuantity);
+            } else if ($PorM == "+") {
+                Item::where('name', '=', $this->name)->increment('quantity', $this->addQuantity);
+            }
         }
 
         $this->addQuantity = "";

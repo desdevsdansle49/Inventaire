@@ -142,17 +142,21 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <form wire:submit.prevent>
-                        <div class="modal-body">
-                            <div class="mb-3 d-flex justify-content-center align-items-center">
-                                <input wire:model="addQuantity" style="width: 150px;" type="text"
-                                    class="m-2 form-control" />
-                                <div class="height-10">
-                                    <button wire:click="addQuantity" type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">+</button>
-                                </div>
+                    <div class="modal-body">
+                        <div class="mb-3 d-flex justify-content-center align-items-center">
+                            <div height-10>
+                                <button data-bs-dismiss="modal" wire:click="addQuantity('-')" type="button"
+                                    class="btn btn-secondary"> -
+                                </button>
+                            </div>
+                            <input wire:model="addQuantity" style="width: 150px;" type="text"
+                                class="m-2 form-control" />
+                            <div class="height-10">
+                                <button data-bs-dismiss="modal" wire:click="addQuantity('+')" type="button"
+                                    class="btn btn-secondary">+</button>
                             </div>
                         </div>
+                    </div>
                     </form>
                 </div>
             </div>
