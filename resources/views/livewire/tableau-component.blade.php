@@ -30,7 +30,7 @@
                                     <form wire:submit.prevent="addItem">
                             @endif
                             <div class="mb-3">
-                                <label class="form-label">Name</label>
+                                <label class="form-label">Nom</label>
                                 <input wire:model="name" type="text" class="form-control">
                             </div>
                             @error('name')
@@ -40,12 +40,12 @@
                             @enderror
                             <div class="d-flex justify-content-between">
                                 <div class="mb-3">
-                                    <label class="form-label">Quantity</label>
+                                    <label class="form-label">Quantité</label>
                                     <input wire:model="quantity" type="text" class="form-control">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Lowest</label>
+                                    <label class="form-label">Minimum</label>
                                     <input wire:model="lowest" type="text" class="form-control">
                                 </div>
 
@@ -63,8 +63,13 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Bar code</label>
+                                <label class="form-label">CodeBare</label>
                                 <input wire:model="barcode" type="text" class="form-control">
+                                @error('barcode')
+                                    <div class="alert alert-danger p-2" role="alert">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Fournisseur</label>
@@ -105,13 +110,13 @@
 
                             <div class="d-flex justify-content-sm-end">
                                 <button type="button" class="btn btn-secondary me-1"
-                                    data-bs-dismiss="modal">Close</button>
+                                    data-bs-dismiss="modal">Fermer</button>
 
                                 @if ($fromEdit)
                                     <div>
                                         <button wire:click="remove" class="btn btn-danger"
-                                            data-bs-dismiss="modal">supprimer</button>
-                                        <button wire:click="edit" class="btn btn-primary">Save changes</button>
+                                            data-bs-dismiss="modal">Supprimer</button>
+                                        <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
                                     </div>
                                 @else
                                     <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -137,21 +142,18 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="mb-3 d-flex justify-content-center align-items-center">
-                            <div height-10>
-                                <button data-bs-dismiss="modal" wire:click="addQuantity('-')" type="button"
-                                    class="btn btn-secondary"> -
-                                </button>
-                            </div>
-                            <input wire:model="addQuantity" style="width: 150px;" type="text"
-                                class="m-2 form-control" />
-                            <div class="height-10">
-                                <button wire:click="addQuantity('+')" type="button"
-                                    class="btn btn-secondary">+</button>
+                    <form wire:submit.prevent>
+                        <div class="modal-body">
+                            <div class="mb-3 d-flex justify-content-center align-items-center">
+                                <input wire:model="addQuantity" style="width: 150px;" type="text"
+                                    class="m-2 form-control" />
+                                <div class="height-10">
+                                    <button wire:click="addQuantity" type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">+</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

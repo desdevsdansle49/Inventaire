@@ -8,6 +8,7 @@ use App\Models\Item;
 use Livewire\WithPagination;
 use Psy\Readline\Hoa\Console;
 use Illuminate\Support\Facades\Validator;
+use phpDocumentor\Reflection\PseudoTypes\True_;
 
 class TableauComponent extends Component
 {
@@ -48,17 +49,17 @@ class TableauComponent extends Component
     //interaction db
     protected $rules = [
         'name' => 'required | unique:items| String',
-        'quantity' => 'required | numeric | gte:0 ',
+        'quantity' => 'required | numeric | gte:0',
         'category_id' => 'required | unique:items',
-        'lowest' => 'numeric | gte:0  '
+        'lowest' => 'numeric | gte:0',
     ];
 
     protected $messages = [
         'name.required' => 'Champ obligatoire',
         'name.unique' => 'Cette item existe déjà',
         'quantity.required' => 'Champ obligatoire',
-        'quantity.gte' => 'Champ >= 0',
-
+        'quantity.gte' => 'Champ > 0',
+        'lowest.numeric' => 'Champ > 0'
     ];
 
     public function addItem()
@@ -106,13 +107,13 @@ class TableauComponent extends Component
         Category::where('Name', '=', $this->category)->delete();
     }
 
-    public function addQuantity($PorM)
+    public function addQuantity()
     {
-        if ($PorM == "-") {
-            Item::where('name', '=', $this->name)->decrement('quantity', $this->addQuantity);
-        } else if ($PorM == "+") {
+
+        if (is_numeric($this->addQuantity)) {
             Item::where('name', '=', $this->name)->increment('quantity', $this->addQuantity);
         }
+
         $this->addQuantity = "";
     }
 
