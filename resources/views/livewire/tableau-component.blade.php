@@ -49,6 +49,7 @@
                                     <input wire:model="lowest" type="text" class="form-control">
                                 </div>
 
+
                             </div>
                             <div class="d-flex justify-content-between">
                                 @error('quantity')
@@ -62,10 +63,24 @@
                                     </div>
                                 @enderror
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">CodeBare</label>
-                                <input wire:model="barcode" type="text" class="form-control">
+
+                            <div class="d-flex justify-content-between">
+                                <div class="mb-3">
+                                    <label class="form-label">CodeBare</label>
+                                    <input wire:model="barcode" type="text" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Emplacement</label>
+                                    <input wire:model="lowest" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
                                 @error('barcode')
+                                    <div class="alert alert-danger p-2" role="alert">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                @error('lowest')
                                     <div class="alert alert-danger p-2" role="alert">
                                         {{ $message }}
                                     </div>
@@ -216,6 +231,7 @@
                         <th class="th2">Nom</th>
                         <th class="th3">Quantité</th>
                         <th class="th4">Categorie</th>
+                        {{-- <th>Categorie</th> --}}
                         <th class="th5">Fournisseur</th>
                         <th class="th6">Note</th>
                         <th class="th7">Editer</th>
@@ -240,6 +256,7 @@
                             @else
                                 <th>-</th>
                             @endif
+                            {{-- <th>test</th> --}}
                             <th class="fw-normal">{{ $item->fournisseur }}</th>
                             <th><button class="btn"
                                     wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"

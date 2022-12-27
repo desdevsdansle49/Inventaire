@@ -86,7 +86,7 @@
     }
 
     .th8 {
-        width: 20px;
+        width: 5px;
     }
 </style>
 
@@ -98,7 +98,7 @@
     @yield('content')
 
     @livewireScripts
-    
+
     <!-- JavaScript Bundle with Popper -->
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
 

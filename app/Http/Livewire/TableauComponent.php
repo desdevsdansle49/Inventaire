@@ -5,13 +5,18 @@ namespace App\Http\Livewire;
 use App\Models\Category;
 use Livewire\Component;
 use App\Models\Item;
+use App\Models\LogHisto;
 use Livewire\WithPagination;
-use Psy\Readline\Hoa\Console;
-use Illuminate\Support\Facades\Validator;
-use phpDocumentor\Reflection\PseudoTypes\True_;
+use Illuminate\Validation\Rule;
 
 class TableauComponent extends Component
 {
+
+    //les query sont probablement tres mal opti
+
+
+
+
 
     //rendering 
     use WithPagination;
@@ -62,6 +67,7 @@ class TableauComponent extends Component
         'lowest.numeric' => 'Champ > 0'
     ];
 
+
     public function addItem()
     {
 
@@ -81,6 +87,12 @@ class TableauComponent extends Component
             'note' => $this->note,
             'category_id' => (Category::where('name', 'like', $this->category_id)->get('id'))[0]->id
         ]);
+
+        LogHisto::insert([
+            'name' => $this->name,
+            'action' => 'Item crée'
+        ]);
+
         if ($this->fromEdit == false) {
 
             $this->clear();
@@ -95,6 +107,11 @@ class TableauComponent extends Component
         Category::insert([
             'name' => $this->category,
         ]);
+
+        LogHisto::insert([
+            'name' => $this->category,
+            'action' => 'Catégorie crée'
+        ]);
     }
 
     public function removeCategory()
@@ -105,15 +122,31 @@ class TableauComponent extends Component
 
         Item::where('category_id', '=', Category::where('name', '=', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '=', '-')->get('id')[0]->id]);
         Category::where('Name', '=', $this->category)->delete();
+
+        LogHisto::insert([
+            'name' => $this->category,
+            'action' => 'Catégorie supprimée'
+        ]);
     }
 
     public function addQuantity($PorM)
     {
+
         if (is_numeric($this->addQuantity)) {
             if ($PorM == "-") {
                 Item::where('name', '=', $this->name)->decrement('quantity', $this->addQuantity);
+
+                LogHisto::insert([
+                    'name' => $this->name,
+                    'action' => 'Quantité +' + $this->addQuantity
+                ]);
             } else if ($PorM == "+") {
                 Item::where('name', '=', $this->name)->increment('quantity', $this->addQuantity);
+
+                LogHisto::insert([
+                    'name' => $this->name,
+                    'action' => 'Quantité -' + $this->addQuantity
+                ]);
             }
         }
 
@@ -123,11 +156,25 @@ class TableauComponent extends Component
     public function remove()
     {
         Item::where('Name', '=', $this->name)->delete();
+
+        LogHisto::insert([
+            'name' => $this->name,
+            'action' => 'Item supprimé'
+        ]);
+
         $this->clear();
     }
 
+    //😬
     public function edit()
     {
+        $this->category_id = $this->category;
+
+        LogHisto::insert([
+            'name' => $this->name,
+            'action' => 'Item modifié'
+        ]);
+
         Item::where('Name', '=', $this->nameForEdit)->delete();
         $this->addItem();
         $this->nameForEdit = $this->name;
@@ -135,6 +182,8 @@ class TableauComponent extends Component
 
     // 
 
+
+    //y'a une facon bien plus clean de faire ca mais je sais plus ce que c'est
     public function defineData($category, $name, $quantity, $barcode, $lowest, $fournisseur, $note)
     {
         $this->nameForEdit = $name;
@@ -185,6 +234,7 @@ class TableauComponent extends Component
 
     public function render()
     {
+        //si le bouton alerte only est activé on montre que les items en dessous de la limite de quantité
         if ($this->alerte == true) {
             $this->result = Item::whereRaw('quantity < lowest')
                 ->where(function ($query) {
@@ -194,7 +244,7 @@ class TableauComponent extends Component
                 ->orderBy('name', 'ASC')
                 ->paginate($this->perPage);
         }
-        //si une category == query exist on ajoute a la recherche sinon on recherche que les items par nom
+        //si la query = une categorie on l'ajoute a la recherche sinon on recherche que les items par nom
         elseif (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
             $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
                 ->orWhere('Barcode', '=', $this->query)
