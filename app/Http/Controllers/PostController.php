@@ -17,4 +17,8 @@ class PostController extends Controller
     {
         return view('stats');
     }
+    public function logs()
+    {
+        return view('historique');
+    }
 }

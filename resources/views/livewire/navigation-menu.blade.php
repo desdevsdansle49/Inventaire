@@ -15,6 +15,9 @@
                 <li class="nav-item">
                     <a class="nav-link @if ($routename == 'stats') active @endif" href="stats">Statistique</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link @if ($routename == 'logs') active @endif" href="logs">Historique</a>
+                </li>
             </ul>
             {{-- <div class="d-flex" role="debug">
                 <h1 class="navbar-brand mb-0">{{ $routename }}</h1>
