@@ -6,9 +6,11 @@ use App\Models\Category;
 use Livewire\Component;
 use App\Models\Item;
 use App\Models\LogHisto;
+use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Route;
 
 class TableauComponent extends Component
 {
@@ -31,6 +33,9 @@ class TableauComponent extends Component
     public $fromEdit;
 
     public $alerte = false;
+
+    public $fromCreate = false;
+    protected $route;
 
     //
 
@@ -80,6 +85,15 @@ class TableauComponent extends Component
     ];
 
 
+    public function mount()
+    {
+        $this->route = Route::current();
+
+        if ($this->route->uri == "create") {
+            $this->fromCreate = True;
+        }
+    }
+
     public function addItem()
     {
 
@@ -89,6 +103,7 @@ class TableauComponent extends Component
         if (!$this->lowest) {
             $this->lowest = 0;
         }
+
 
         Item::insert([
             'name' => $this->name,

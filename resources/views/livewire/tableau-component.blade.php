@@ -3,147 +3,151 @@
 
 
 
+        @if ($fromCreate)
 
-
-        <!-- Modal add/edit -->
-        <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        @if ($fromEdit)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $name }}</h5>
-                        @else
-                            <h5 class="modal-title" id="exampleModalLabel">New Item</h5>
-                        @endif
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-
-
-                        {{-- form --}}
-                        <div>
+            <!-- Modal add/edit -->
+            <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
                             @if ($fromEdit)
-                                <form wire:submit.prevent wire:keydown.enter='edit'
-                                    onkeydown="return event.key != 'Enter';">
-                                @else
-                                    <form wire:submit.prevent="addItem">
-                            @endif
-                            <div class="mb-3">
-                                <label class="form-label">Nom</label>
-                                <input wire:model="name" type="text" class="form-control">
-                            </div>
-                            @error('name')
-                                <div class="alert alert-danger p-2" role="alert">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            <div class="d-flex justify-content-between">
-                                <div class="mb-3">
-                                    <label class="form-label">Quantité</label>
-                                    <input wire:model="quantity" type="text" class="form-control">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Minimum</label>
-                                    <input wire:model="lowest" type="text" class="form-control">
-                                </div>
-
-
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                @error('quantity')
-                                    <div class="alert alert-danger p-2" role="alert">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                                @error('lowest')
-                                    <div class="alert alert-danger p-2" role="alert">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
-                            <div class="d-flex justify-content-between">
-                                <div class="mb-3">
-                                    <label class="form-label">CodeBare</label>
-                                    <input wire:model="barcode" type="text" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Emplacement</label>
-                                    <input wire:model="lowest" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                @error('barcode')
-                                    <div class="alert alert-danger p-2" role="alert">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                                @error('lowest')
-                                    <div class="alert alert-danger p-2" role="alert">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Fournisseur</label>
-                                <input wire:model="fournisseur" type="text" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Note</label>
-                                <textarea rows="3" wire:model="note" class="form-control"></textarea>
-                            </div>
-                            <label class="form-label">Catégorie</label>
-                            @if ($inputCategory == false)
-                                <div>
-                                    <select wire:model="category" class="custom-select ">
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->name }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <button wire:click="showInput" type="button" class="btn btn-secondary">+</button>
-                                    <button
-                                        onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
-                                        wire:click="removeCategory" type="button" class="btn btn-secondary">-</button>
-                                </div>
+                                <h5 class="modal-title" id="exampleModalLabel">{{ $name }}</h5>
                             @else
-                                <div>
-                                    <div class="mb-3  border rounded p-3">
-                                        <label class="form-label">Catégorie</label>
-                                        <input wire:model="category" type="text" class="form-control mb-2">
-                                        <button wire:click="showInput" type="button"
-                                            class="btn btn-secondary">Annuler</button>
-                                        <button wire:click="addCategory" type="button"
-                                            class="btn btn-primary">Ajouter</button>
+                                <h5 class="modal-title" id="exampleModalLabel">New Item</h5>
+                            @endif
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
 
+
+                            {{-- form --}}
+                            <div>
+                                @if ($fromEdit)
+                                    <form wire:submit.prevent wire:keydown.enter='edit'
+                                        onkeydown="return event.key != 'Enter';">
+                                    @else
+                                        <form wire:submit.prevent="addItem">
+                                @endif
+                                <div class="mb-3">
+                                    <label class="form-label">Nom</label>
+                                    <input wire:model="name" type="text" class="form-control">
+                                </div>
+                                @error('name')
+                                    <div class="alert alert-danger p-2" role="alert">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                                <div class="d-flex justify-content-between">
+                                    <div class="mb-3">
+                                        <label class="form-label">Quantité</label>
+                                        <input wire:model="quantity" type="text" class="form-control">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Minimum</label>
+                                        <input wire:model="lowest" type="text" class="form-control">
+                                    </div>
+
+
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    @error('quantity')
+                                        <div class="alert alert-danger p-2" role="alert">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                    @error('lowest')
+                                        <div class="alert alert-danger p-2" role="alert">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <div class="mb-3">
+                                        <label class="form-label">CodeBare</label>
+                                        <input wire:model="barcode" type="text" class="form-control">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Emplacement</label>
+                                        <input wire:model="lowest" type="text" class="form-control">
                                     </div>
                                 </div>
-                            @endif
-
-
-
-                            <div class="d-flex justify-content-sm-end">
-                                <button type="button" class="btn btn-secondary me-1"
-                                    data-bs-dismiss="modal">Fermer</button>
-
-                                @if ($fromEdit)
+                                <div class="d-flex justify-content-between">
+                                    @error('barcode')
+                                        <div class="alert alert-danger p-2" role="alert">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                    @error('lowest')
+                                        <div class="alert alert-danger p-2" role="alert">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Fournisseur</label>
+                                    <input wire:model="fournisseur" type="text" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Note</label>
+                                    <textarea rows="3" wire:model="note" class="form-control"></textarea>
+                                </div>
+                                <label class="form-label">Catégorie</label>
+                                @if ($inputCategory == false)
                                     <div>
-                                        <button wire:click="remove" class="btn btn-danger"
-                                            data-bs-dismiss="modal">Supprimer</button>
-                                        <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
+                                        <select wire:model="category" class="custom-select ">
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->name }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button wire:click="showInput" type="button"
+                                            class="btn btn-secondary">+</button>
+                                        <button
+                                            onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
+                                            wire:click="removeCategory" type="button"
+                                            class="btn btn-secondary">-</button>
                                     </div>
                                 @else
-                                    <button type="submit" class="btn btn-primary">Ajouter</button>
-                                @endif
-                            </div>
+                                    <div>
+                                        <div class="mb-3  border rounded p-3">
+                                            <label class="form-label">Catégorie</label>
+                                            <input wire:model="category" type="text" class="form-control mb-2">
+                                            <button wire:click="showInput" type="button"
+                                                class="btn btn-secondary">Annuler</button>
+                                            <button wire:click="addCategory" type="button"
+                                                class="btn btn-primary">Ajouter</button>
 
-                            </form>
+                                        </div>
+                                    </div>
+                                @endif
+
+
+
+                                <div class="d-flex justify-content-sm-end">
+                                    @if ($fromEdit)
+                                        <div>
+                                            <button
+                                                onclick="confirm('Etes vous sur ?') || event.stopImmediatePropagation()"
+                                                wire:click="remove" class="btn btn-danger"
+                                                data-bs-dismiss="modal">Supprimer</button>
+                                            <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
+                                        </div>
+                                    @else
+                                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                                    @endif
+                                </div>
+
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+        @endif
 
 
 
@@ -196,12 +200,13 @@
 
         <h2 class="mt-2 text-center">Inventaire</h2>
 
-
-        <!-- add button -->
-        <button type="button" wire:click="false" class="btn mb-3 bgBtn" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">
-            Nouvelle item
-        </button>
+        @if ($fromCreate)
+            <!-- add button -->
+            <button type="button" wire:click="false" class="btn mb-3 bgBtn" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+                Nouvelle item
+            </button>
+        @endif
 
 
         <div class="d-flex flex-row-reverse mr-5 mb-3 justify-content-between">
@@ -261,10 +266,13 @@
                             <th><button class="btn"
                                     wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
                                     data-bs-toggle="modal" data-bs-target="#noteModal">...</button>
-                            <th><button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
-                                    data-bs-toggle="modal" data-bs-target="#exampleModal">⚙</button>
                             </th>
+                            @if ($fromCreate)
+                                <th><button class="btn"
+                                        wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
+                                        data-bs-toggle="modal" data-bs-target="#exampleModal">⚙</button>
+                                </th>
+                            @endif
                             @if ($item->quantity < $item->lowest)
                                 <th>⚠</th>
                             @else
