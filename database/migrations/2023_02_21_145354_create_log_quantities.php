@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('log_histos', function (Blueprint $table) {
+        Schema::create('log_quantities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('action');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('log_histos');
+        Schema::dropIfExists('log_quantities');
     }
 };

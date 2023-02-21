@@ -6,6 +6,7 @@ use App\Models\Category;
 use Livewire\Component;
 use App\Models\Item;
 use App\Models\LogHisto;
+use App\Models\LogQuantity;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
@@ -14,12 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 class TableauComponent extends Component
 {
-
-    //les query sont probablement tres mal opti
-
-
-
-
 
     //rendering 
     use WithPagination;
@@ -168,18 +163,10 @@ class TableauComponent extends Component
         if (is_numeric($this->addQuantity)) {
             if ($PorM == "-") {
                 Item::where('name', '=', $this->name)->decrement('quantity', $this->addQuantity);
-
-                LogHisto::insert([
-                    'name' => $this->name,
-                    'action' => 'Quantité - ' . $this->addQuantity
-                ]);
+                $this->addHisto($this->name, 'Quantité - ' . $this->addQuantity, True);
             } else if ($PorM == "+") {
                 Item::where('name', '=', $this->name)->increment('quantity', $this->addQuantity);
-
-                LogHisto::insert([
-                    'name' => $this->name,
-                    'action' => 'Quantité + ' . $this->addQuantity
-                ]);
+                $this->addHisto($this->name, 'Quantité - ' . $this->addQuantity, True);
             }
         }
 
@@ -198,17 +185,28 @@ class TableauComponent extends Component
 
     public function checkHisto()
     {
+
+        if (LogQuantity::count() > 100) {
+            LogQuantity::orderBy('id', 'asc')->first()->delete();
+        }
         if (LogHisto::count() > 100) {
             LogHisto::orderBy('id', 'asc')->first()->delete();
         }
     }
 
-    public function addHisto($name, $action)
+    public function addHisto($name, $action, $quantity = null)
     {
-        LogHisto::insert([
-            'name' => $name,
-            'action' => $action
-        ]);
+        if ($quantity) {
+            LogQuantity::insert([
+                'name' => $name,
+                'action' => $action
+            ]);
+        } else {
+            LogHisto::insert([
+                'name' => $name,
+                'action' => $action
+            ]);
+        }
     }
 
     //😬
