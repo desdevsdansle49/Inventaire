@@ -52,6 +52,7 @@ class TableauComponent extends Component
     public $addQuantity;
     public $fournisseur;
     public $note;
+    public $emplacement;
 
     public $nameForEdit2;
     public $category2;
@@ -61,6 +62,7 @@ class TableauComponent extends Component
     public $lowest2;
     public $fournisseur2;
     public $note2;
+    public $emplacement2;
 
     public $tableau1;
     public $tableau2;
@@ -112,29 +114,22 @@ class TableauComponent extends Component
             'lowest' => $this->lowest,
             'fournisseur' => $this->fournisseur,
             'note' => $this->note,
+            'emplacement' => $this->emplacement,
             'category_id' => (Category::where('name', 'like', $this->category_id)->get('id'))[0]->id
         ]);
 
 
-        if (LogHisto::count() > 10) {
-            LogHisto::orderBy('id', 'asc')->first()->delete();
-        }
+        $this->checkHisto();
 
         if ($this->fromEdit == false) {
-            LogHisto::insert([
-                'name' => $this->name,
-                'action' => 'Item crée'
-            ]);
+            $this->addHisto($this->name, 'Item crée');
             $this->clear();
         } else {
-            $this->tableau1 = [$this->nameForEdit, $this->category, $this->name, $this->quantity, $this->barcode, $this->lowest, $this->fournisseur, $this->note];
-            $this->tableau2 = [$this->nameForEdit2, $this->category2, $this->name2, $this->quantity2, $this->barcode2, $this->lowest2, $this->fournisseur2, $this->note2,];
+            $this->tableau1 = [$this->nameForEdit, $this->category, $this->name, $this->quantity, $this->barcode, $this->lowest, $this->fournisseur, $this->note, $this->emplacement];
+            $this->tableau2 = [$this->nameForEdit2, $this->category2, $this->name2, $this->quantity2, $this->barcode2, $this->lowest2, $this->fournisseur2, $this->note2, $this->emplacement2];
             for ($i = 0; $i < count($this->tableau1); $i++) {
                 if ($this->tableau1[$i] != $this->tableau2[$i]) {
-                    LogHisto::insert([
-                        'name' => $this->name,
-                        'action' => 'Item modifié : ' . $this->tableau2[$i] . " -> " . $this->tableau1[$i]
-                    ]);
+                    $this->addHisto($this->name, 'Item modifié : ' . $this->tableau2[$i] . " -> " . $this->tableau1[$i]);
                 }
             }
         }
@@ -149,13 +144,8 @@ class TableauComponent extends Component
             'name' => $this->category,
         ]);
 
-        if (LogHisto::count() > 10) {
-            LogHisto::orderBy('id', 'asc')->first()->delete();
-        }
-        LogHisto::insert([
-            'name' => $this->category,
-            'action' => 'Catégorie crée'
-        ]);
+        $this->checkHisto();
+        $this->addHisto($this->category, 'Catégorie crée');
     }
 
     public function removeCategory()
@@ -167,20 +157,13 @@ class TableauComponent extends Component
         Item::where('category_id', '=', Category::where('name', '=', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '=', '-')->get('id')[0]->id]);
         Category::where('Name', '=', $this->category)->delete();
 
-        if (LogHisto::count() > 10) {
-            LogHisto::orderBy('id', 'asc')->first()->delete();
-        }
-        LogHisto::insert([
-            'name' => $this->category,
-            'action' => 'Catégorie supprimée'
-        ]);
+        $this->checkHisto();
+        $this->addHisto($this->category, 'Catégorie supprimée');
     }
 
     public function addQuantity($PorM)
     {
-        if (LogHisto::count() > 10) {
-            LogHisto::orderBy('id', 'asc')->first()->delete();
-        }
+        $this->checkHisto();
 
         if (is_numeric($this->addQuantity)) {
             if ($PorM == "-") {
@@ -207,15 +190,25 @@ class TableauComponent extends Component
     {
         Item::where('Name', '=', $this->name)->delete();
 
-        if (LogHisto::count() > 10) {
-            LogHisto::orderBy('id', 'asc')->first()->delete();
-        }
-        LogHisto::insert([
-            'name' => $this->name,
-            'action' => 'Item supprimé'
-        ]);
+        $this->checkHisto();
+        $this->addHisto($this->name, 'Item supprimé');
 
         $this->clear();
+    }
+
+    public function checkHisto()
+    {
+        if (LogHisto::count() > 100) {
+            LogHisto::orderBy('id', 'asc')->first()->delete();
+        }
+    }
+
+    public function addHisto($name, $action)
+    {
+        LogHisto::insert([
+            'name' => $name,
+            'action' => $action
+        ]);
     }
 
     //😬
@@ -231,7 +224,7 @@ class TableauComponent extends Component
 
 
     //y'a une facon bien plus clean de faire ca mais je sais plus ce que c'est
-    public function defineData($category, $name, $quantity, $barcode, $lowest, $fournisseur, $note)
+    public function defineData($category, $name, $quantity, $barcode, $lowest, $fournisseur, $note, $emplacement)
     {
         $this->nameForEdit = $name;
         $this->fromEdit = true;
@@ -242,6 +235,8 @@ class TableauComponent extends Component
         $this->lowest = $lowest;
         $this->fournisseur = $fournisseur;
         $this->note = $note;
+        $this->emplacement = $emplacement;
+
 
         $this->nameForEdit2 = $name;
         $this->category2 = $category;
@@ -251,6 +246,7 @@ class TableauComponent extends Component
         $this->lowest2 = $lowest;
         $this->fournisseur2 = $fournisseur;
         $this->note2 = $note;
+        $this->emplacement2 = $emplacement;
     }
 
 
@@ -266,6 +262,7 @@ class TableauComponent extends Component
         $this->lowest = '';
         $this->fournisseur = '';
         $this->note = '';
+        $this->emplacement = '';
         $this->resetValidation();
     }
 

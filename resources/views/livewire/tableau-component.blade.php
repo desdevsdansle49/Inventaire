@@ -72,7 +72,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Emplacement</label>
-                                        <input wire:model="lowest" type="text" class="form-control">
+                                        <input wire:model="emplacement" type="text" class="form-control">
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between">
@@ -250,7 +250,7 @@
                             <th class="fw-normal">{{ $item->name }}</th>
                             <th>
                                 <button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}','{{ $item->emplacement }}')"
                                     data-bs-toggle="modal" data-bs-target="#numberModal">
                                     {{ $item->quantity }}
                                 </button>
@@ -264,12 +264,12 @@
                             {{-- <th>test</th> --}}
                             <th class="fw-normal">{{ $item->fournisseur }}</th>
                             <th><button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
+                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}','{{ $item->emplacement }}')"
                                     data-bs-toggle="modal" data-bs-target="#noteModal">...</button>
                             </th>
                             @if ($fromCreate)
                                 <th><button class="btn"
-                                        wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}')"
+                                        wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}','{{ $item->emplacement }}')"
                                         data-bs-toggle="modal" data-bs-target="#exampleModal">⚙</button>
                                 </th>
                             @endif
