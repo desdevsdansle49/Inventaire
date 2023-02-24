@@ -273,7 +273,7 @@ class TableauComponent extends Component
 
     public function updatingQuery()
     {
-        $this->resetPage();
+        $this->reset();
     }
 
     public function showInput()
@@ -291,26 +291,20 @@ class TableauComponent extends Component
                 ->where(function ($query) {
                     $query->where('Name', 'like', '%' . $this->query . '%')
                         ->orWhere('Barcode', '=', $this->query);
-                })
-                ->orderBy('name', 'ASC')
-                ->paginate($this->perPage);
+                });
         }
         //si la query = une categorie on l'ajoute a la recherche sinon on recherche que les items par nom
         elseif (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
             $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
                 ->orWhere('Barcode', '=', $this->query)
-                ->orWhere('category_id', 'like', (Category::where('Name', 'like', '%' . $this->query . '%')->get('id')[0]->id))
-                ->orderBy('name', 'ASC')
-                ->paginate($this->perPage);
+                ->orWhere('category_id', 'like', (Category::where('Name', 'like', '%' . $this->query . '%')->get('id')[0]->id));
         } else {
             $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
-                ->orWhere('Barcode', '=', $this->query)
-                ->orderBy('name', 'ASC')
-                ->paginate($this->perPage);
+                ->orWhere('Barcode', '=', $this->query);
         }
 
         return view('livewire.tableau-component', [
-            'items' => $this->result,
+            'items' => $this->result->orderBy('name', 'ASC')->paginate($this->perPage),
             'categories' => Category::orderBy('name', 'ASC')->get(),
         ]);
     }

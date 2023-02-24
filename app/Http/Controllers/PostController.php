@@ -21,4 +21,8 @@ class PostController extends Controller
     {
         return view('historique');
     }
+    public function catTab()
+    {
+        return view('catTab');
+    }
 }

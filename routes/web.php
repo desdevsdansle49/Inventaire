@@ -7,6 +7,8 @@ Route::get('/', [\App\Http\Controllers\PostController::class, 'tableau']);
 Route::get('/stats', [\App\Http\Controllers\PostController::class, 'stats']);
 Route::get('/logs', [\App\Http\Controllers\PostController::class, 'logs']);
 Route::get('/create', [\App\Http\Controllers\PostController::class, 'tableau']);
+Route::get('/catTab', [\App\Http\Controllers\PostController::class, 'catTab']);
+
 // Route::get('/infophp', function () {
 //     return phpinfo();
 // });
