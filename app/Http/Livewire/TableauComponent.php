@@ -3,6 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\Category;
+use App\Models\Department;
+use App\Models\Unit;
+use App\Models\Employee;
 use Livewire\Component;
 use App\Models\Item;
 use App\Models\LogHisto;
@@ -24,6 +27,9 @@ class TableauComponent extends Component
 
     public $query;
 
+    public $inputDepartment = false;
+    public $inputUnit = false;
+    public $inputEmployee = false;
     public $inputCategory = false;
     public $fromEdit;
 
@@ -62,6 +68,10 @@ class TableauComponent extends Component
     public $tableau1;
     public $tableau2;
 
+    public $department;
+    public $unit;
+    public $employee;
+
     //
 
 
@@ -70,7 +80,7 @@ class TableauComponent extends Component
         'name' => 'required | unique:items| String',
         'quantity' => 'required | numeric | gte:0',
         'category_id' => 'required | unique:items',
-        'lowest' => 'numeric | gte:0',
+        'lowest' => 'nullable | numeric | gte:0',
     ];
 
     protected $messages = [
@@ -93,7 +103,6 @@ class TableauComponent extends Component
 
     public function addItem()
     {
-
         $this->category_id = $this->category;
         $this->validate();
 
@@ -154,6 +163,47 @@ class TableauComponent extends Component
 
         $this->checkHisto();
         $this->addHisto($this->category, 'Catégorie supprimée');
+    }
+
+    public function addDUE($DUE)
+    {
+        // $this->validateOnly($this->$DUE);
+        $inputName = 'input' . ucfirst($DUE);
+        $this->$inputName = !$this->$inputName;
+
+
+        if ($DUE == 'department')
+            Department::insert([
+                'name' => $this->$DUE,
+            ]);
+        elseif ($DUE == 'unit')
+            Unit::insert([
+                'name' => $this->$DUE,
+                'department_id' => Department::where('name', '=', $this->department)->get('id')[0]->id
+            ]);
+        elseif ($DUE == 'employee')
+            Employee::insert([
+                'name' => $this->$DUE,
+                'unit_id' => Unit::where('name', '=', $this->unit)->get('id')[0]->id
+            ]);
+
+        $this->checkHisto();
+        $this->addHisto($this->$DUE, $DUE . ' crée');
+    }
+
+    public function removeDUE($DUE)
+    {
+        $inputName = 'input' . ucfirst($DUE);
+
+        if ($DUE == 'department')
+            Department::where('name', $this->$DUE)->delete();
+        elseif ($DUE == 'unit')
+            Unit::where('name', $this->$DUE)->delete();
+        elseif ($DUE == 'employee')
+            Employee::where('name', $this->$DUE)->delete();
+
+        $this->checkHisto();
+        $this->addHisto($this->$DUE, $DUE . ' supprimé');
     }
 
     public function addQuantity($PorM)
@@ -224,27 +274,17 @@ class TableauComponent extends Component
     //y'a une facon bien plus clean de faire ca mais je sais plus ce que c'est
     public function defineData($category, $name, $quantity, $barcode, $lowest, $fournisseur, $note, $emplacement)
     {
-        $this->nameForEdit = $name;
         $this->fromEdit = true;
-        $this->category = $category;
-        $this->name = $name;
-        $this->quantity = $quantity;
-        $this->barcode = $barcode;
-        $this->lowest = $lowest;
-        $this->fournisseur = $fournisseur;
-        $this->note = $note;
-        $this->emplacement = $emplacement;
-
-
-        $this->nameForEdit2 = $name;
-        $this->category2 = $category;
-        $this->name2 = $name;
-        $this->quantity2 = $quantity;
-        $this->barcode2 = $barcode;
-        $this->lowest2 = $lowest;
-        $this->fournisseur2 = $fournisseur;
-        $this->note2 = $note;
-        $this->emplacement2 = $emplacement;
+        $this->nameForEdit2 = $this->nameForEdit = $name;
+        $this->category2 = $this->category = $category;
+        $this->name2 = $this->name = $name;
+        $this->quantity2 = $this->quantity = $quantity;
+        $this->barcode2 = $this->barcode = $barcode;
+        $this->lowest2 = $this->lowest = $lowest;
+        $this->fournisseur2 = $this->fournisseur = $fournisseur;
+        $this->note2 = $this->note = $note;
+        $this->emplacement2 = $this->emplacement = $emplacement;
+        $this->department = $this->employee = $this->unit = '-';
     }
 
 
@@ -253,14 +293,15 @@ class TableauComponent extends Component
 
     public function clear()
     {
-        $this->name = '';
-        $this->quantity = '';
-        $this->barcode = '';
-        $this->category = '-';
-        $this->lowest = '';
-        $this->fournisseur = '';
-        $this->note = '';
-        $this->emplacement = '';
+        // $this->name = '';
+        // $this->quantity = '';
+        // $this->barcode = '';
+        // $this->category = '-';
+        // $this->lowest = '';
+        // $this->fournisseur = '';
+        // $this->note = '';
+        // $this->emplacement = '';
+        $this->reset(['name', 'quantity', 'barcode', 'category', 'lowest', 'fournisseur', 'note', 'emplacement']);
         $this->resetValidation();
     }
 
@@ -276,16 +317,36 @@ class TableauComponent extends Component
         $this->reset();
     }
 
-    public function showInput()
+    public function showInput($inputName)
     {
-        $this->category = '';
-        $this->inputCategory = !$this->inputCategory;
+        $this->$inputName = '';
+        $inputBool = 'input' . ucfirst($inputName);
+        $this->$inputBool = !$this->$inputBool;
+    }
+
+    public function updatedEmployee()
+    {
+        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee) {
+            return;
+        }
+        $tmp = Employee::where('name', '=', $this->employee)->first();
+        $this->unit = (($tmp)->unit)->name;
+        $this->updatedUnit();
+    }
+
+    public function updatedUnit()
+    {
+        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee) {
+            return;
+        }
+        $tmp = Unit::where('name', '=', $this->unit)->first();
+        $this->department = (($tmp)->department)->name;
     }
 
 
     public function render()
     {
-        //si le bouton alerte only est activé on montre que les items en dessous de la limite de quantité
+        //si le bouton alerte only est activé on ne montre que les items en dessous de la limite de quantité
         if ($this->alerte == true) {
             $this->result = Item::whereRaw('quantity < lowest')
                 ->where(function ($query) {
@@ -303,9 +364,14 @@ class TableauComponent extends Component
                 ->orWhere('Barcode', '=', $this->query);
         }
 
+
+
         return view('livewire.tableau-component', [
             'items' => $this->result->orderBy('name', 'ASC')->paginate($this->perPage),
             'categories' => Category::orderBy('name', 'ASC')->get(),
+            'departments' => Department::orderBy('name', 'ASC')->get(),
+            'units' => Unit::orderBy('name', 'ASC')->get(),
+            'employees' => Employee::orderBy('name', 'ASC')->get(),
         ]);
     }
 

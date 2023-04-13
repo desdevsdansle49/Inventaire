@@ -1,4 +1,4 @@
-<div class="bg-white rounded p-5 m-4">
+<div class="bg-white rounded p-5 m-4 shadow-sm">
     <main role="main" class="container">
 
 
@@ -30,7 +30,7 @@
                                     @else
                                         <form wire:submit.prevent="addItem">
                                 @endif
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label">Nom</label>
                                     <input wire:model="name" type="text" class="form-control">
                                 </div>
@@ -43,27 +43,29 @@
                                     <div class="mb-3">
                                         <label class="form-label">Quantité</label>
                                         <input wire:model="quantity" type="text" class="form-control">
+                                        <div class="pt-2">
+                                            @error('quantity')
+                                                <div class="alert alert-danger p-2" role="alert">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Minimum</label>
                                         <input wire:model="lowest" type="text" class="form-control">
+                                        <div class="pt-2">
+                                            @error('lowest')
+                                                <div class="alert alert-danger p-2" role="alert">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
                                     </div>
+                                </div>
 
 
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    @error('quantity')
-                                        <div class="alert alert-danger p-2" role="alert">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                    @error('lowest')
-                                        <div class="alert alert-danger p-2" role="alert">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
 
                                 <div class="d-flex justify-content-between">
                                     <div class="mb-3">
@@ -77,11 +79,6 @@
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     @error('barcode')
-                                        <div class="alert alert-danger p-2" role="alert">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                    @error('lowest')
                                         <div class="alert alert-danger p-2" role="alert">
                                             {{ $message }}
                                         </div>
@@ -103,7 +100,7 @@
                                                 <option value="{{ $category->name }}">{{ $category->name }}</option>
                                             @endforeach
                                         </select>
-                                        <button wire:click="showInput" type="button"
+                                        <button wire:click="showInput('category')" type="button"
                                             class="btn btn-secondary">+</button>
                                         <button
                                             onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
@@ -115,7 +112,7 @@
                                         <div class="mb-3  border rounded p-3">
                                             <label class="form-label">Catégorie</label>
                                             <input wire:model="category" type="text" class="form-control mb-2">
-                                            <button wire:click="showInput" type="button"
+                                            <button wire:click="showInput('category')" type="button"
                                                 class="btn btn-secondary">Annuler</button>
                                             <button wire:click="addCategory" type="button"
                                                 class="btn btn-primary">Ajouter</button>
@@ -175,6 +172,88 @@
                                     class="btn btn-secondary">+</button>
                             </div>
                         </div>
+                        <label class="form-label">Département</label>
+                        @if ($inputDepartment == false)
+                            <div>
+                                <select wire:model="department" class="custom-select ">
+                                    @foreach ($departments as $department)
+                                        <option value="{{ $department->name }}">{{ $department->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button wire:click="showInput('department')" type="button"
+                                    class="btn btn-secondary">+</button>
+                                <button
+                                    onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
+                                    wire:click="removeDUE('department')" type="button"
+                                    class="btn btn-secondary">-</button>
+                            </div>
+                        @else
+                            <div>
+                                <div class="mb-3  border rounded p-3">
+                                    <label class="form-label">Département</label>
+                                    <input wire:model="department" type="text" class="form-control mb-2">
+                                    <button wire:click="showInput('department')" type="button"
+                                        class="btn btn-secondary">Annuler</button>
+                                    <button wire:click="addDUE('department')" type="button"
+                                        class="btn btn-primary">Ajouter</button>
+
+                                </div>
+                            </div>
+                        @endif
+                        @if ($inputUnit == false)
+                            <div>
+                                <select wire:model="unit" class="custom-select ">
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->name }}">{{ $unit->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button wire:click="showInput('unit')" type="button"
+                                    class="btn btn-secondary">+</button>
+                                <button
+                                    onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
+                                    wire:click="removeDUE('unit')" type="button"
+                                    class="btn btn-secondary">-</button>
+                            </div>
+                        @else
+                            <div>
+                                <div class="mb-3  border rounded p-3">
+                                    <label class="form-label">Unité</label>
+                                    <input wire:model="unit" type="text" class="form-control mb-2">
+                                    <button wire:click="showInput('unit')" type="button"
+                                        class="btn btn-secondary">Annuler</button>
+                                    <button wire:click="addDUE('unit')" type="button"
+                                        class="btn btn-primary">Ajouter</button>
+
+                                </div>
+                            </div>
+                        @endif
+                        @if ($inputEmployee == false)
+                            <div>
+                                <select wire:model="employee" class="custom-select ">
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->name }}">{{ $employee->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button wire:click="showInput('employee')" type="button"
+                                    class="btn btn-secondary">+</button>
+                                <button
+                                    onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
+                                    wire:click="removeDUE('employee')" type="button"
+                                    class="btn btn-secondary">-</button>
+                            </div>
+                        @else
+                            <div>
+                                <div class="mb-3 border rounded p-3">
+                                    <label class="form-label">Employé</label>
+                                    <input wire:model="employee" type="text" class="form-control mb-2">
+                                    <button wire:click="showInput('employee')" type="button"
+                                        class="btn btn-secondary">Annuler</button>
+                                    <button wire:click="addDUE('employee')" type="button"
+                                        class="btn btn-primary">Ajouter</button>
+
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     </form>
                 </div>
@@ -230,13 +309,12 @@
 
         <div class="table-responsive">
             <table class="table">
-                <thead class="table-dark">
+                <thead class="table-active">
                     <tr>
                         <th class="th1"></th>
                         <th class="th2">Nom</th>
                         <th class="th3">Quantité</th>
                         <th class="th4">Categorie</th>
-                        {{-- <th>Categorie</th> --}}
                         <th class="th5">Fournisseur</th>
                         <th class="th6">Note</th>
                         <th class="th7">Editer</th>

@@ -30,7 +30,7 @@
     }
 
     body {
-        background-color: darkgrey;
+        background-color: lightgray;
     }
 
     a {
