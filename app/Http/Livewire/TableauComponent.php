@@ -10,11 +10,13 @@ use Livewire\Component;
 use App\Models\Item;
 use App\Models\LogHisto;
 use App\Models\LogQuantity;
+use App\Models\Transaction;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
+use phpDocumentor\Reflection\PseudoTypes\True_;
 
 class TableauComponent extends Component
 {
@@ -36,20 +38,19 @@ class TableauComponent extends Component
     public $alerte = false;
 
     public $fromCreate = false;
-    protected $route;
-
     //
 
     //interaction db
 
     public $name;
+    public $item_id;
     public $nameForEdit;
     public $quantity;
     public $category = '-';
     public $category_id;
+    public $category_inc;
     public $barcode;
     public $lowest;
-    protected $result;
     public $addQuantity;
     public $fournisseur;
     public $note;
@@ -65,12 +66,10 @@ class TableauComponent extends Component
     public $note2;
     public $emplacement2;
 
-    public $tableau1;
-    public $tableau2;
-
     public $department;
     public $unit;
     public $employee;
+
 
     //
 
@@ -79,7 +78,7 @@ class TableauComponent extends Component
     protected $rules = [
         'name' => 'required | unique:items| String',
         'quantity' => 'required | numeric | gte:0',
-        'category_id' => 'required | unique:items',
+        // 'category_id' => 'required | unique:categories',
         'lowest' => 'nullable | numeric | gte:0',
     ];
 
@@ -94,22 +93,23 @@ class TableauComponent extends Component
 
     public function mount()
     {
-        $this->route = Route::current();
+        $route = Route::current();
 
-        if ($this->route->uri == "create") {
+        if ($route->uri == "create") {
             $this->fromCreate = True;
         }
     }
 
     public function addItem()
     {
-        $this->category_id = $this->category;
+
+        $this->category_inc = $this->category;
+
         $this->validate();
 
         if (!$this->lowest) {
             $this->lowest = 0;
         }
-
 
         Item::insert([
             'name' => $this->name,
@@ -119,7 +119,7 @@ class TableauComponent extends Component
             'fournisseur' => $this->fournisseur,
             'note' => $this->note,
             'emplacement' => $this->emplacement,
-            'category_id' => (Category::where('name', 'like', $this->category_id)->get('id'))[0]->id
+            'category_id' => (Category::where('name', 'like', $this->category_inc)->get('id'))[0]->id
         ]);
 
 
@@ -129,11 +129,11 @@ class TableauComponent extends Component
             $this->addHisto($this->name, 'Item crée');
             $this->clear();
         } else {
-            $this->tableau1 = [$this->nameForEdit, $this->category, $this->name, $this->quantity, $this->barcode, $this->lowest, $this->fournisseur, $this->note, $this->emplacement];
-            $this->tableau2 = [$this->nameForEdit2, $this->category2, $this->name2, $this->quantity2, $this->barcode2, $this->lowest2, $this->fournisseur2, $this->note2, $this->emplacement2];
-            for ($i = 0; $i < count($this->tableau1); $i++) {
-                if ($this->tableau1[$i] != $this->tableau2[$i]) {
-                    $this->addHisto($this->name, 'Item modifié : ' . $this->tableau2[$i] . " -> " . $this->tableau1[$i]);
+            $tableau1 = [$this->nameForEdit, $this->category, $this->name, $this->quantity, $this->barcode, $this->lowest, $this->fournisseur, $this->note, $this->emplacement];
+            $tableau2 = [$this->nameForEdit2, $this->category2, $this->name2, $this->quantity2, $this->barcode2, $this->lowest2, $this->fournisseur2, $this->note2, $this->emplacement2];
+            for ($i = 0; $i < count($tableau1); $i++) {
+                if ($tableau1[$i] != $tableau2[$i]) {
+                    $this->addHisto($this->name, 'Item modifié : ' . $tableau2[$i] . " -> " . $tableau1[$i]);
                 }
             }
         }
@@ -219,8 +219,20 @@ class TableauComponent extends Component
                 $this->addHisto($this->name, 'Quantité - ' . $this->addQuantity, True);
             }
         }
-
+        $this->createTransaction();
         $this->addQuantity = "";
+    }
+
+    public function createTransaction()
+    {
+        Transaction::insert([
+            'item_id' => $this->item_id,
+            'category_id' => $this->category_id,
+            'department_id' => Department::where('name', $this->department)->get('id')[0]->id,
+            'unit_id' => Unit::where('name', $this->unit)->get('id')[0]->id,
+            'employee_id' => Employee::where('name', $this->employee)->get('id')[0]->id,
+
+        ]);
     }
 
     public function remove()
@@ -262,7 +274,7 @@ class TableauComponent extends Component
     //😬
     public function edit()
     {
-        $this->category_id = $this->category;
+        $this->category_inc = $this->category;
         Item::where('Name', '=', $this->nameForEdit)->delete();
         $this->addItem();
         $this->nameForEdit = $this->name;
@@ -272,18 +284,21 @@ class TableauComponent extends Component
 
 
     //y'a une facon bien plus clean de faire ca mais je sais plus ce que c'est
-    public function defineData($category, $name, $quantity, $barcode, $lowest, $fournisseur, $note, $emplacement)
+    public function defineData($item)
     {
+        $decodedItem = json_decode($item);
+        $this->item_id = $decodedItem->id;
         $this->fromEdit = true;
-        $this->nameForEdit2 = $this->nameForEdit = $name;
-        $this->category2 = $this->category = $category;
-        $this->name2 = $this->name = $name;
-        $this->quantity2 = $this->quantity = $quantity;
-        $this->barcode2 = $this->barcode = $barcode;
-        $this->lowest2 = $this->lowest = $lowest;
-        $this->fournisseur2 = $this->fournisseur = $fournisseur;
-        $this->note2 = $this->note = $note;
-        $this->emplacement2 = $this->emplacement = $emplacement;
+        $this->nameForEdit2 = $this->nameForEdit = $decodedItem->name;
+        $this->category2 = $this->category = $decodedItem->category->name;
+        $this->category_id = $decodedItem->category->id;
+        $this->name2 = $this->name = $decodedItem->name;
+        $this->quantity2 = $this->quantity = $decodedItem->quantity;
+        $this->barcode2 = $this->barcode = $decodedItem->barcode;
+        $this->lowest2 = $this->lowest = $decodedItem->lowest;
+        $this->fournisseur2 = $this->fournisseur = $decodedItem->fournisseur;
+        $this->note2 = $this->note = $decodedItem->note;
+        $this->emplacement2 = $this->emplacement = $decodedItem->emplacement;
         $this->department = $this->employee = $this->unit = '-';
     }
 
@@ -293,14 +308,6 @@ class TableauComponent extends Component
 
     public function clear()
     {
-        // $this->name = '';
-        // $this->quantity = '';
-        // $this->barcode = '';
-        // $this->category = '-';
-        // $this->lowest = '';
-        // $this->fournisseur = '';
-        // $this->note = '';
-        // $this->emplacement = '';
         $this->reset(['name', 'quantity', 'barcode', 'category', 'lowest', 'fournisseur', 'note', 'emplacement']);
         $this->resetValidation();
     }
@@ -326,7 +333,7 @@ class TableauComponent extends Component
 
     public function updatedEmployee()
     {
-        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee) {
+        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee || $this->employee == '-') {
             return;
         }
         $tmp = Employee::where('name', '=', $this->employee)->first();
@@ -336,7 +343,7 @@ class TableauComponent extends Component
 
     public function updatedUnit()
     {
-        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee) {
+        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee || $this->unit == '-') {
             return;
         }
         $tmp = Unit::where('name', '=', $this->unit)->first();
@@ -348,7 +355,7 @@ class TableauComponent extends Component
     {
         //si le bouton alerte only est activé on ne montre que les items en dessous de la limite de quantité
         if ($this->alerte == true) {
-            $this->result = Item::whereRaw('quantity < lowest')
+            $result = Item::whereRaw('quantity < lowest')
                 ->where(function ($query) {
                     $query->where('Name', 'like', '%' . $this->query . '%')
                         ->orWhere('Barcode', '=', $this->query);
@@ -356,22 +363,43 @@ class TableauComponent extends Component
         }
         //si la query = une categorie on l'ajoute a la recherche sinon on recherche que les items par nom
         elseif (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
-            $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
+            $result = Item::where('Name', 'like', '%' . $this->query . '%')
                 ->orWhere('Barcode', '=', $this->query)
                 ->orWhere('category_id', 'like', (Category::where('Name', 'like', '%' . $this->query . '%')->get('id')[0]->id));
         } else {
-            $this->result = Item::where('Name', 'like', '%' . $this->query . '%')
+            $result = Item::where('Name', 'like', '%' . $this->query . '%')
                 ->orWhere('Barcode', '=', $this->query);
         }
 
+        $skipIt = false;
+        if ($this->department !== null && $this->department !== '-' && $this->inputDepartment == false) {
+            $departmentID = Department::where('name', $this->department)->first();
+            $resultUnit = Unit::where('department_id', $departmentID->id)->orWhere('name', '-')->orderBy('name', 'ASC')->get();
+            if ($this->inputEmployee == false) {
+                $unitIds = $resultUnit->filter(function ($unit) {
+                    return $unit->name !== '-';
+                })->pluck('id');
+
+                $resultEmployee = Employee::whereIn('unit_id', $unitIds)->orWhere('name', '-')->orderBy('name', 'ASC')->get();
+                $skipIt = true;
+            }
+        } else {
+            $resultUnit = Unit::orderBy('name', 'ASC')->get();
+        }
+        if ($this->unit !== null && $this->unit !== '-' && $this->inputUnit == false) {
+            $unitID = Unit::where('name', $this->unit)->first();
+            $resultEmployee = Employee::where('unit_id', $unitID->id)->orWhere('name', '-')->orderBy('name', 'ASC')->get();
+        } elseif ($skipIt == false) {
+            $resultEmployee = Employee::orderBy('name', 'ASC')->get();
+        }
 
 
         return view('livewire.tableau-component', [
-            'items' => $this->result->orderBy('name', 'ASC')->paginate($this->perPage),
+            'items' => $result->orderBy('name', 'ASC')->paginate($this->perPage),
             'categories' => Category::orderBy('name', 'ASC')->get(),
             'departments' => Department::orderBy('name', 'ASC')->get(),
-            'units' => Unit::orderBy('name', 'ASC')->get(),
-            'employees' => Employee::orderBy('name', 'ASC')->get(),
+            'units' => $resultUnit,
+            'employees' => $resultEmployee,
         ]);
     }
 

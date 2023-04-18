@@ -323,12 +323,13 @@
                 </thead>
                 <tbody>
                     @foreach ($items as $item)
+                        @if ($item->category)
+                        @endif
                         <tr>
                             <th></th>
                             <th class="fw-normal">{{ $item->name }}</th>
                             <th>
-                                <button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}','{{ $item->emplacement }}')"
+                                <button class="btn" wire:click="defineData('{{ $item }}')"
                                     data-bs-toggle="modal" data-bs-target="#numberModal">
                                     {{ $item->quantity }}
                                 </button>
@@ -339,15 +340,14 @@
                             @else
                                 <th>-</th>
                             @endif
-                            {{-- <th>test</th> --}}
+
                             <th class="fw-normal">{{ $item->fournisseur }}</th>
-                            <th><button class="btn"
-                                    wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}','{{ $item->emplacement }}')"
+                            <th>
+                                <button class="btn" wire:click="defineData('{{ $item }}')"
                                     data-bs-toggle="modal" data-bs-target="#noteModal">...</button>
                             </th>
                             @if ($fromCreate)
-                                <th><button class="btn"
-                                        wire:click="defineData('{{ $item->category->name }}', '{{ $item->name }}', '{{ $item->quantity }}', '{{ $item->barcode }}', '{{ $item->lowest }}', '{{ $item->fournisseur }}', '{{ $item->note }}','{{ $item->emplacement }}')"
+                                <th><button class="btn" wire:click="defineData('{{ $item }}')"
                                         data-bs-toggle="modal" data-bs-target="#exampleModal">⚙</button>
                                 </th>
                             @endif

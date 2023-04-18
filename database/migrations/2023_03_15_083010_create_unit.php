@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('department_id');
+            $table->unsignedBigInteger('department_id')->default(0);
             $table->foreign('department_id')->references('id')->on('department');
             $table->timestamps();
         });
