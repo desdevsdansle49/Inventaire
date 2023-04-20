@@ -13,4 +13,9 @@ class Unit extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

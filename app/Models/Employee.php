@@ -13,4 +13,9 @@ class Employee extends Model
     {
         return $this->belongsTo(Unit::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }
