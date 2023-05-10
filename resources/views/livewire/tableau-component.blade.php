@@ -1,8 +1,6 @@
 <div class="bg-white rounded p-5 m-4 shadow-sm">
     <main role="main" class="container">
 
-
-
         @if ($fromCreate)
 
             <!-- Modal add/edit -->
@@ -145,8 +143,6 @@
             </div>
 
         @endif
-
-
 
         <!-- Modal Quantity -->
         <div wire:ignore.self class="modal fade" id="numberModal" tabindex="-1" aria-labelledby="numberModalLabel"
@@ -301,7 +297,8 @@
                 <label for="query" class="visually-hidden">Search</label>
                 <input type="search" wire:model="query" id="query" class="form-control w-auto "
                     placeholder="recherche">
-                <input class="ms-3 me-1" wire:model='alerte'type="checkbox" id="alerte" name="alerte">
+                <input class="ms-3 me-1" wire:model='alerte'type="checkbox" id="alerte" name="alerte"
+                    wire:ignore>
                 <label for="alerte">Alerte</label>
             </div>
         </div>

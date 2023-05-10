@@ -12,12 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CatTab extends Component
 {
     public $query;
-
     public $fromEdit = False;
+    public $name = '';
+    public $name2 = '';
 
     protected $result;
-
-    protected $MyCategory;
 
     protected $rules = [
         'name' => 'required | unique:items| String',
@@ -36,32 +35,48 @@ class CatTab extends Component
 
     public function addCategory()
     {
-        $this->validateOnly($this->category);
+        $this->validateOnly($this->name);
 
         Category::insert([
-            'name' => $this->category,
+            'name' => $this->name,
         ]);
 
         $this->checkHisto();
-        $this->addHisto($this->category, 'Catégorie crée');
+        $this->addHisto($this->name, 'Catégorie crée');
     }
 
     public function removeCategory()
     {
-        if ($this->category == '-') {
+        if ($this->name == '-') {
             return;
         }
 
-        Item::where('category_id', '=', Category::where('name', '=', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '=', '-')->get('id')[0]->id]);
-        Category::where('Name', '=', $this->category)->delete();
+        $categoryId = Category::firstWhere('name', $this->name)->id;
+        $newCategoryId = Category::firstWhere('name', '-')->id;
+        Item::where('category_id', $categoryId)->update(['category_id' => $newCategoryId]);
+        Category::where('Name', '=', $this->name)->delete();
 
         $this->checkHisto();
-        $this->addHisto($this->category, 'Catégorie supprimée');
+        $this->addHisto($this->name, 'Catégorie supprimée');
+    }
+
+    public function addHisto($name, $action, $quantity = null)
+    {
+        if ($quantity) {
+            LogQuantity::insert([
+                'name' => $name,
+                'action' => $action
+            ]);
+        } else {
+            LogHisto::insert([
+                'name' => $name,
+                'action' => $action
+            ]);
+        }
     }
 
     public function checkHisto()
     {
-
         if (LogQuantity::count() > 100) {
             LogQuantity::orderBy('id', 'asc')->first()->delete();
         }
@@ -70,6 +85,24 @@ class CatTab extends Component
         }
     }
 
+    public function clear()
+    {
+        $this->reset(['name', 'name2']);
+        $this->resetValidation();
+    }
+
+    public function false()
+    {
+        $this->fromEdit = false;
+        $this->clear();
+    }
+
+    public function defineData($item)
+    {
+        $decodedItem = json_decode($item);
+        $this->name = $this->name2 = $decodedItem->name;
+        $this->fromEdit = true;
+    }
 
 
     public function render()

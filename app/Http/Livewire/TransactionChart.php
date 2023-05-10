@@ -24,22 +24,26 @@ class TransactionChart extends Component
             ->withCount('transactions')
             ->get();
 
+
         $results = [];
         foreach ($departments as $department) {
             $departmentName = $department->name;
             $items = [];
 
             foreach ($department->transactions as $transaction) {
-                $itemName = $transaction->item->name;
+                // Vérifiez que la relation 'item' n'est pas null
+                if ($transaction->item) {
+                    $itemName = $transaction->item->name;
 
-                if (!array_key_exists($itemName, $items)) {
-                    $items[$itemName] = [
-                        'itemName' => $itemName,
-                        'itemNumber' => 0,
-                    ];
+                    if (!array_key_exists($itemName, $items)) {
+                        $items[$itemName] = [
+                            'itemName' => $itemName,
+                            'itemNumber' => 0,
+                        ];
+                    }
+
+                    $items[$itemName]['itemNumber'] += 1;
                 }
-
-                $items[$itemName]['itemNumber'] += 1;
             }
 
             $total = $department->transactions_count;
@@ -67,16 +71,19 @@ class TransactionChart extends Component
             $items = [];
 
             foreach ($unit->transactions as $transaction) {
-                $itemName = $transaction->item->name;
+                // Vérifiez que la relation 'item' n'est pas null
+                if ($transaction->item) {
+                    $itemName = $transaction->item->name;
 
-                if (!array_key_exists($itemName, $items)) {
-                    $items[$itemName] = [
-                        'itemName' => $itemName,
-                        'itemNumber' => 0,
-                    ];
+                    if (!array_key_exists($itemName, $items)) {
+                        $items[$itemName] = [
+                            'itemName' => $itemName,
+                            'itemNumber' => 0,
+                        ];
+                    }
+
+                    $items[$itemName]['itemNumber'] += 1;
                 }
-
-                $items[$itemName]['itemNumber'] += 1;
             }
 
             $total = $unit->transactions_count;
@@ -103,16 +110,19 @@ class TransactionChart extends Component
             $items = [];
 
             foreach ($employee->transactions as $transaction) {
-                $itemName = $transaction->item->name;
+                // Vérifiez que la relation 'item' n'est pas null
+                if ($transaction->item) {
+                    $itemName = $transaction->item->name;
 
-                if (!array_key_exists($itemName, $items)) {
-                    $items[$itemName] = [
-                        'itemName' => $itemName,
-                        'itemNumber' => 0,
-                    ];
+                    if (!array_key_exists($itemName, $items)) {
+                        $items[$itemName] = [
+                            'itemName' => $itemName,
+                            'itemNumber' => 0,
+                        ];
+                    }
+
+                    $items[$itemName]['itemNumber'] += 1;
                 }
-
-                $items[$itemName]['itemNumber'] += 1;
             }
 
             $total = $employee->transactions_count;

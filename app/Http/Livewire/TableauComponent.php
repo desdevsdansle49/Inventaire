@@ -74,6 +74,7 @@ class TableauComponent extends Component
     //
 
 
+
     //interaction db
     protected $rules = [
         'name' => 'required | unique:items| String',
@@ -89,7 +90,6 @@ class TableauComponent extends Component
         'quantity.gte' => 'Champ > 0',
         'lowest.numeric' => 'Champ > 0'
     ];
-
 
     public function mount()
     {
@@ -319,10 +319,7 @@ class TableauComponent extends Component
     }
 
 
-    public function updatingQuery()
-    {
-        $this->reset();
-    }
+
 
     public function showInput($inputName)
     {
@@ -350,19 +347,16 @@ class TableauComponent extends Component
         $this->department = (($tmp)->department)->name;
     }
 
-
-    public function render()
+    private function getItems()
     {
-        //si le bouton alerte only est activé on ne montre que les items en dessous de la limite de quantité
+        // Votre code initial pour récupérer les éléments
         if ($this->alerte == true) {
             $result = Item::whereRaw('quantity < lowest')
                 ->where(function ($query) {
                     $query->where('Name', 'like', '%' . $this->query . '%')
                         ->orWhere('Barcode', '=', $this->query);
                 });
-        }
-        //si la query = une categorie on l'ajoute a la recherche sinon on recherche que les items par nom
-        elseif (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
+        } elseif (Category::where('Name', 'like', '%' . $this->query . '%')->exists()) {
             $result = Item::where('Name', 'like', '%' . $this->query . '%')
                 ->orWhere('Barcode', '=', $this->query)
                 ->orWhere('category_id', 'like', (Category::where('Name', 'like', '%' . $this->query . '%')->get('id')[0]->id));
@@ -371,37 +365,51 @@ class TableauComponent extends Component
                 ->orWhere('Barcode', '=', $this->query);
         }
 
-        $skipIt = false;
-        if ($this->department !== null && $this->department !== '-' && $this->inputDepartment == false) {
-            $departmentID = Department::where('name', $this->department)->first();
-            $resultUnit = Unit::where('department_id', $departmentID->id)->orWhere('name', '-')->orderBy('name', 'ASC')->get();
-            if ($this->inputEmployee == false) {
-                $unitIds = $resultUnit->filter(function ($unit) {
-                    return $unit->name !== '-';
-                })->pluck('id');
-
-                $resultEmployee = Employee::whereIn('unit_id', $unitIds)->orWhere('name', '-')->orderBy('name', 'ASC')->get();
-                $skipIt = true;
-            }
-        } else {
-            $resultUnit = Unit::orderBy('name', 'ASC')->get();
-        }
-        if ($this->unit !== null && $this->unit !== '-' && $this->inputUnit == false) {
-            $unitID = Unit::where('name', $this->unit)->first();
-            $resultEmployee = Employee::where('unit_id', $unitID->id)->orWhere('name', '-')->orderBy('name', 'ASC')->get();
-        } elseif ($skipIt == false) {
-            $resultEmployee = Employee::orderBy('name', 'ASC')->get();
-        }
-
-
-        return view('livewire.tableau-component', [
-            'items' => $result->orderBy('name', 'ASC')->paginate($this->perPage),
-            'categories' => Category::orderBy('name', 'ASC')->get(),
-            'departments' => Department::orderBy('name', 'ASC')->get(),
-            'units' => $resultUnit,
-            'employees' => $resultEmployee,
-        ]);
+        // Mon code pour trier et paginer les résultats
+        return $result->orderBy('name', 'ASC')->paginate($this->perPage);
     }
+
+
+    private function getUnits()
+    {
+        $result = Unit::query()
+            ->when($this->department !== null && $this->department !== '-' && $this->inputDepartment == false, function ($query) {
+                $departmentID = Department::where('name', $this->department)->first()->id;
+                return $query->where('department_id', $departmentID)->orWhere('name', '-');
+            });
+
+        return $result->orderBy('name', 'ASC')->get();
+    }
+
+    private function getEmployees()
+    {
+        $result = Employee::query()
+            ->when($this->unit !== null && $this->unit !== '-' && $this->inputUnit == false, function ($query) {
+                $unitID = Unit::where('name', $this->unit)->first()->id;
+                return $query->where('unit_id', $unitID)->orWhere('name', '-');
+            }, function ($query) {
+                return $query->when($this->department !== null && $this->department !== '-' && $this->inputDepartment == false && $this->inputEmployee == false, function ($query) {
+                    $departmentID = Department::where('name', $this->department)->first()->id;
+                    $unitIds = Unit::where('department_id', $departmentID)->orWhere('name', '-')->pluck('id');
+                    return $query->whereIn('unit_id', $unitIds)->orWhere('name', '-');
+                });
+            });
+
+        return $result->orderBy('name', 'ASC')->get();
+    }
+
+    public function render()
+    {
+        $items = $this->getItems();
+        $categories = Category::orderBy('name', 'ASC')->get();
+        $departments = Department::orderBy('name', 'ASC')->get();
+        $units = $this->getUnits();
+        $employees = $this->getEmployees();
+
+        return view('livewire.tableau-component', compact('items', 'categories', 'departments', 'units', 'employees'));
+    }
+
+
 
     //
 }

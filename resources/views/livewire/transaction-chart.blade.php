@@ -33,11 +33,26 @@
         const units = @json($units);
         const employees = @json($employees);
 
+        function getRandomHSLColor() {
+            const hue = Math.floor(Math.random() * 360);
+            const saturation = 50 + Math.floor(Math.random() * 30); // Saturation entre 50 et 80
+            const lightness = 40 + Math.floor(Math.random() * 30); // Luminosité entre 40 et 70
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        function generateUniqueColors(count) {
+            const colors = new Set();
+            while (colors.size < count) {
+                colors.add(getRandomHSLColor());
+            }
+            return Array.from(colors);
+        }
+
         function createChartData(data, selectedItem) {
             const labels = data.map(d => d.name);
             const values = data.map(d => selectedItem ? d.items.find(item => item.itemName === selectedItem)?.itemNumber ||
                 0 : d.total);
-            const backgroundColors = data.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16));
+            const backgroundColors = generateUniqueColors(data.length);
 
             return {
                 labels: labels,
@@ -82,4 +97,5 @@
             updateCharts(itemSelect.value);
         });
     </script>
+
 </div>
