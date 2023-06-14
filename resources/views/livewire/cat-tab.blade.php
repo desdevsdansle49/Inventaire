@@ -21,9 +21,14 @@
                     <div class="modal-body">
 
                         {{-- form --}}
-                        <form>
+                        <form wire:submit.prevent>
 
                             <input wire:model="name" type="text" class="form-control">
+                            @error('name')
+                                <div class="alert alert-danger mt-2" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                             <div class=" mt-3 d-flex justify-content-sm-end">
                                 @if ($fromEdit)
                                     <div>
@@ -34,10 +39,27 @@
                                         <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
                                     </div>
                                 @else
-                                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                                    <button type="submit" class="btn btn-primary"
+                                        wire:click="addCategory">Ajouter</button>
                                 @endif
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div wire:ignore.self class="modal fade" id="itemListModal" tabindex="-1" aria-labelledby="itemListLabel"
+            aria-hidden="true" >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p>List de tous les items associés</p>
+                    </div>
+                    <div class="modal-body">
+                        @foreach ($listItem as $item)
+                            <p>{{ $item->name }}</p>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -55,6 +77,7 @@
                     <tr>
                         <th class="th1"></th>
                         <th class="th2">Nom</th>
+                        <th class="th3">Nom</th>
                         <th class="th7">Editer</th>
                     </tr>
                 </thead>
@@ -63,6 +86,8 @@
                         <tr>
                             <th></th>
                             <th class="fw-normal">{{ $item->name }}</th>
+                            <th><button class="btn" data-bs-toggle="modal" data-bs-target="#itemListModal"
+                                    wire:click="defineData('{{ $item }}')">⚙</button>
                             <th><button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                     wire:click="defineData('{{ $item }}')">⚙</button>
                             </th>

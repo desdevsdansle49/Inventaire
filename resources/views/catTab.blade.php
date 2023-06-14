@@ -1,5 +1,5 @@
 @extends('layouts.home')
 
 @section('content')
-    @livewire('cat-tab')
+    @livewire('table-manager')
 @endsection

@@ -15,11 +15,12 @@ class CatTab extends Component
     public $fromEdit = False;
     public $name = '';
     public $name2 = '';
+    public $listItem = [];
 
     protected $result;
 
     protected $rules = [
-        'name' => 'required | unique:items| String',
+        'name' => 'required | unique:categories| String',
     ];
 
     protected $messages = [
@@ -35,7 +36,7 @@ class CatTab extends Component
 
     public function addCategory()
     {
-        $this->validateOnly($this->name);
+        $this->validate();
 
         Category::insert([
             'name' => $this->name,
@@ -43,6 +44,7 @@ class CatTab extends Component
 
         $this->checkHisto();
         $this->addHisto($this->name, 'Catégorie crée');
+        $this->clear();
     }
 
     public function removeCategory()
@@ -58,7 +60,9 @@ class CatTab extends Component
 
         $this->checkHisto();
         $this->addHisto($this->name, 'Catégorie supprimée');
+        $this->clear();
     }
+
 
     public function addHisto($name, $action, $quantity = null)
     {
@@ -102,6 +106,8 @@ class CatTab extends Component
         $decodedItem = json_decode($item);
         $this->name = $this->name2 = $decodedItem->name;
         $this->fromEdit = true;
+        $id = Category::where('name', $this->name)->first()->id;
+        $this->listItem = Item::where('category_id', $id)->get();
     }
 
 
@@ -110,7 +116,8 @@ class CatTab extends Component
         $this->result = Category::where('name', 'like', '%' . $this->query . '%')->orderBy('name', 'ASC')->paginate(10);
 
         return view('livewire.cat-tab', [
-            'items' => $this->result
+            'items' => $this->result,
+            'listItem' => $this->listItem,
         ]);
     }
 }
