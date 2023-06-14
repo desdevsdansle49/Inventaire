@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <label for="itemSelect">Select an item:</label>
                 <select id="itemSelect">
-                    <option value="">All Items</option>
+                    <option wire:model="itemName" value="">All Items</option>
                     @foreach ($items as $item)
                         <option value="{{ $item->name }}">{{ $item->name }}</option>
                     @endforeach
@@ -26,6 +26,7 @@
                 <canvas id="employeeChart" width="400" height="400"></canvas>
             </div>
         </div>
+        <p>{{ $transactions }}</p>
     </div>
 
     <script>
@@ -96,6 +97,21 @@
         itemSelect.addEventListener('change', function() {
             updateCharts(itemSelect.value);
         });
+
+        function separateData(inputArray) {
+            var dates = [];
+            var counts = [];
+
+            for (var i = 0; i < inputArray.length; i++) {
+                dates.push(inputArray[i].date);
+                counts.push(inputArray[i].count);
+            }
+
+            return {
+                dates: dates,
+                counts: counts
+            };
+        }
     </script>
 
 </div>
