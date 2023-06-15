@@ -3,8 +3,8 @@
 
         <h2 class="mt-2 mb-5 text-center">Historique</h2>
 
-        <input class="ms-3 me-1 mb-3" wire:model='altTable'type="checkbox" id="alerte" name="alerte">
-        <label for="alerte">Historique des modifications</label>
+        <input class="ms-3 me-1 mb-3" wire:model='altTable'type="checkbox" id="histo" name="histo">
+        <label for="histo">Historique des modifications</label>
         <div>
             <div class="table-responsive">
                 <table class="table">

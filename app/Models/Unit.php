@@ -18,4 +18,9 @@ class Unit extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
 }

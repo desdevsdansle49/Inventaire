@@ -12,4 +12,9 @@ class Department extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function units()
+    {
+        return $this->hasMany(Unit::class);
+    }
 }

@@ -365,7 +365,6 @@ class TableauComponent extends Component
                 ->orWhere('Barcode', '=', $this->query);
         }
 
-        // Mon code pour trier et paginer les résultats
         return $result->orderBy('name', 'ASC')->paginate($this->perPage);
     }
 
