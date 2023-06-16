@@ -6,17 +6,20 @@
             Nouvelle catégorie
         </button>
 
+
+        {{-- Modals --}}
         <div wire:ignore.self class="modal fade" id="departmentModal" tabindex="-1" aria-labelledby="departmentModal"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($linkedDepartment[0]->name)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $linkedDepartment[0]->name }}</h5>
+                        @isset($departmentName)
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $departmentName }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+
 
                         {{-- form --}}
                         {{-- <form wire:submit.prevent>
@@ -52,13 +55,23 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($linkedUnit)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $linkedUnit }}</h5>
+                        @isset($unitName)
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $unitName }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        @isset($linkedDepartment['linked']->id)
+                            <select id="itemSelect">
+                                @foreach ($linkedDepartment['all'] as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ $item->id == $linkedDepartment['linked']->id ? 'selected' : '' }}>
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
 
+                            </select>
+                        @endisset
                         {{-- form --}}
                         {{-- <form wire:submit.prevent>
 
@@ -93,8 +106,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($linkedDepartment[0]->name)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $linkedDepartment[0]->name }}</h5>
+                        @isset($employeeName)
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $employeeName }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -128,11 +141,18 @@
                 </div>
             </div>
         </div>
+
+
+
+        {{-- search --}}
         <div class="d-flex align-items-center">
             <label for="query" class="visually-hidden">Search</label>
             <input type="search" wire:model="query" id="query" class="form-control w-auto mb-3"
                 placeholder="recherche">
         </div>
+
+
+        {{-- Tableaux --}}
         <div class="d-flex justify-content-between">
             <div class="table-responsive">
                 <table class="table">
@@ -148,8 +168,8 @@
                             <tr>
                                 <th></th>
                                 <th class="fw-normal">{{ $department->name }}</th>
-                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                        wire:click="getDataDepartment('{{ $department->name }}')">⚙</button>
+                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#departmentModal"
+                                        wire:click="getDataDepartment('{{ $department }}')">⚙</button>
                                 </th>
                             </tr>
                             </tr>
@@ -202,8 +222,8 @@
                             <tr>
                                 <th></th>
                                 <th class="fw-normal">{{ $employee->name }}</th>
-                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                        wire:click="defineData('{{ $employee }} , ')">⚙</button>
+                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#employeeModal"
+                                        wire:click="getDataEmployee('{{ $employee }}')">⚙</button>
                                 </th>
                                 {{-- <th><input class="ms-3 me-1 mb-3" type="checkbox" id="selectDepartment"
                                         name="selectDepartment"></th>

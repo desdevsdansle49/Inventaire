@@ -19,19 +19,33 @@ class DepartmentTable extends Component
     private $linkedUnit;
     private $linkedEmployee;
 
-    public function getDataDepartment($name)
+    public $departmentName;
+    public $unitName;
+    public $employeeName;
+
+    public function getDataDepartment($department)
     {
-        $departmentName = $name;
-        $this->linkedDepartment = Department::with(['units.employees'])->where('name', $departmentName)->get();
+        $decodedDepartment = json_decode($department);
+        $this->departmentName = $decodedDepartment->name;
     }
+
     public function getDataUnit($unit)
     {
         $decodedUnit = json_decode($unit);
-        $this->linkedUnit = $decodedUnit->name;
-        $this->linkedDepartment = Department::where('id', $decodedUnit->id)->first();
+        $this->unitName = $decodedUnit->name;
+        $this->linkedDepartment = [
+            'linked' => Department::where('id', $decodedUnit->department_id)->first(),
+            'all' => Department::get()
+        ];
     }
-    public function getDataEmployee($name)
+    public function getDataEmployee($employee)
     {
+        $decodedEmployee = json_decode($employee);
+        $this->employeeName = $decodedEmployee->name;
+        $this->linkedUnit = [
+            'linked' => Unit::where('id', $decodedEmployee->unit_id)->first(),
+            'all' => Unit::get()
+        ];
     }
 
     public function render()
@@ -47,6 +61,7 @@ class DepartmentTable extends Component
             'resultEmployee' => $this->resultEmployee,
             'linkedDepartment' => $this->linkedDepartment,
             'linkedUnit' => $this->linkedUnit,
+            'linkedEmployee' => $this->linkedEmployee,
         ]);
     }
 }
