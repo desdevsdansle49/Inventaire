@@ -158,7 +158,7 @@ class TableauComponent extends Component
             return;
         }
 
-        Item::where('category_id', '=', Category::where('name', '=', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '=', '-')->get('id')[0]->id]);
+        Item::where('category_id', Category::where('name', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '-')->get('id')[0]->id]);
         Category::where('Name', '=', $this->category)->delete();
 
         $this->checkHisto();

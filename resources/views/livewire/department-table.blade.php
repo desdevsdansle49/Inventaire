@@ -13,8 +13,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($departmentName)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $departmentName }}</h5>
+                        @isset($department['name'])
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $department['name'] }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -55,23 +55,26 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($unitName)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $unitName }}</h5>
+                        @isset($unit['name'])
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $unit['name'] }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         @isset($linkedDepartment['linked']->id)
-                            <select id="itemSelect">
+                            <select wire:model="selectForUnit" id="itemSelect">
                                 @foreach ($linkedDepartment['all'] as $item)
-                                    <option value="{{ $item->id }}"
-                                        {{ $item->id == $linkedDepartment['linked']->id ? 'selected' : '' }}>
+                                    <option value="{{ $item->id }}">
                                         {{ $item->name }}
                                     </option>
                                 @endforeach
-
                             </select>
                         @endisset
+                        <button
+                            onclick="confirm('Etes vous sur de supprimer cette unité ?') || event.stopImmediatePropagation()"
+                            wire:click="removeUnit" type="button" class="btn btn-danger"
+                            data-bs-dismiss="modal">Supprimer</button>
+                        <button wire:click="editUnit" class="btn btn-primary">Sauvegarder</button>
                         {{-- form --}}
                         {{-- <form wire:submit.prevent>
 
@@ -106,12 +109,23 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($employeeName)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $employeeName }}</h5>
+                        @isset($employee['name'])
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $employee['name'] }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+
+                        @isset($linkedUnit['linked']->id)
+                            <select wire:model="selectForEmployee" id="itemSelect">
+                                @foreach ($linkedUnit['all'] as $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
+
+                            </select>
+                        @endisset
 
                         {{-- form --}}
                         {{-- <form wire:submit.prevent>
