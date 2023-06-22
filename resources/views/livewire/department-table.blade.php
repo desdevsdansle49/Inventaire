@@ -61,9 +61,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        @isset($linkedDepartment['linked']->id)
-                            <select wire:model="selectForUnit" id="itemSelect">
-                                @foreach ($linkedDepartment['all'] as $item)
+                        @isset($linkedDepartment->id)
+                            <select wire:model="selectForUnit">
+                                @foreach ($allDepartment as $item)
                                     <option value="{{ $item->id }}">
                                         {{ $item->name }}
                                     </option>
@@ -116,16 +116,20 @@
                     </div>
                     <div class="modal-body">
 
-                        @isset($linkedUnit['linked']->id)
+                        @isset($linkedUnit->id)
                             <select wire:model="selectForEmployee" id="itemSelect">
-                                @foreach ($linkedUnit['all'] as $item)
+                                @foreach ($allUnit as $item)
                                     <option value="{{ $item->id }}">
                                         {{ $item->name }}
                                     </option>
                                 @endforeach
-
                             </select>
                         @endisset
+                        <button
+                            onclick="confirm('Etes vous sur de supprimer cette unité ?') || event.stopImmediatePropagation()"
+                            wire:click="removeEmployee" type="button" class="btn btn-danger"
+                            data-bs-dismiss="modal">Supprimer</button>
+                        <button wire:click="editEmployee" class="btn btn-primary">Sauvegarder</button>
 
                         {{-- form --}}
                         {{-- <form wire:submit.prevent>

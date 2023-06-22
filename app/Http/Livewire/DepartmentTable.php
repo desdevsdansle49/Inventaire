@@ -16,8 +16,11 @@ class DepartmentTable extends Component
     public $query = '';
 
     public $linkedDepartment;
+    public $allDepartment;
     public $linkedUnit;
+    public $allUnit;
     public $linkedEmployee;
+    public $allEmployee;
 
     public $department;
     public $unit;
@@ -25,6 +28,7 @@ class DepartmentTable extends Component
 
     public $selectForEmployee;
     public $selectForUnit;
+    public $test;
 
     public function getDataDepartment($department)
     {
@@ -36,39 +40,19 @@ class DepartmentTable extends Component
     {
         $decodedUnit = json_decode($unit);
         $this->unit = ['name' => $decodedUnit->name, 'id' => $decodedUnit];
-        $this->linkedDepartment = [
-            'linked' => Department::where('id', $decodedUnit->department_id)->first(),
-            'all' => Department::get()
-        ];
-        $this->selectForUnit = $this->linkedDepartment['linked']->id;
+        $this->linkedDepartment = Department::where('id', $decodedUnit->department_id)->first();
+        $this->allDepartment = Department::get();
+
+        $this->selectForUnit = $this->linkedDepartment->id;
     }
 
     public function getDataEmployee($employee)
     {
         $decodedEmployee = json_decode($employee);
         $this->employee = ['name' => $decodedEmployee->name, 'id' => $decodedEmployee->id];
-        $this->linkedUnit = [
-            'linked' => Unit::where('id', $decodedEmployee->unit_id)->first(),
-            'all' => Unit::get()
-        ];
-        $this->selectForEmployee = $this->linkedUnit['linked']->id;
-    }
-
-    //livewire supprime la valeur de linkedVariable a chaque fois que SelectForVariable est appelé alors j'ai trouvé ca comme solution
-    public function updatedSelectForEmployee($value)
-    {
-        $this->linkedUnit = [
-            'linked' => Unit::where('id', $value)->first(),
-            'all' => Unit::get()
-        ];
-    }
-
-    public function updatedSelectForUnit($value)
-    {
-        $this->linkedDepartment = [
-            'linked' => Department::where('id', $value)->first(),
-            'all' => Department::get()
-        ];
+        $this->linkedUnit = Unit::where('id', $decodedEmployee->unit_id)->first();
+        $this->allUnit = Unit::get();
+        $this->selectForEmployee = $this->linkedUnit->id;
     }
 
     public function removeUnit()
@@ -90,13 +74,16 @@ class DepartmentTable extends Component
 
     public function editUnit()
     {
-        if ($this->selectForUnit != $this->linkedDepartment['linked']['id']) {
+        if ($this->selectForUnit != $this->linkedDepartment['id']) {
             Unit::where('id', $this->unit['id'])->update(['department_id' => $this->selectForUnit]);
         }
     }
 
     public function editEmployee()
     {
+        if ($this->selectForEmployee != $this->linkedUnit['id']) {
+            Employee::where('id', $this->employee['id'])->update(['unit_id' => $this->selectForEmployee]);
+        }
     }
 
     public function editDepartment()
@@ -115,8 +102,11 @@ class DepartmentTable extends Component
             'resultUnit' => $this->resultUnit,
             'resultEmployee' => $this->resultEmployee,
             'linkedDepartment' => $this->linkedDepartment,
+            'allDepartment' => $this->allDepartment,
             'linkedUnit' => $this->linkedUnit,
+            'allUnit' => $this->allUnit,
             'linkedEmployee' => $this->linkedEmployee,
+            'allEmployee' => $this->allEmployee,
         ]);
     }
 }
