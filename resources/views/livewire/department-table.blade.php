@@ -13,38 +13,29 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($department['name'])
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $department['name'] }}</h5>
+                        @isset($departmentName)
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $departmentName }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-
-
-                        {{-- form --}}
-                        {{-- <form wire:submit.prevent>
-
-                            <input wire:model="name" type="text" class="form-control">
-                            @error('name')
-                                <div class="alert alert-danger mt-2" role="alert">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            <div class=" mt-3 d-flex justify-content-sm-end">
-                                @if ($fromEdit)
-                                    <div>
-                                        <button
-                                            onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
-                                            wire:click="removeCategory" type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">Supprimer</button>
-                                        <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
-                                    </div>
-                                @else
-                                    <button type="submit" class="btn btn-primary"
-                                        wire:click="addCategory">Ajouter</button>
-                                @endif
+                        <input wire:model="name" type="text" class="form-control">
+                        @error('name')
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {{ $message }}
                             </div>
-                        </form> --}}
+                        @enderror
+                        <div class=" mt-3 d-flex justify-content-sm-end">
+                            @if ($fromEdit)
+                                <button onclick="confirm('Etes vous sur ?') || event.stopImmediatePropagation()"
+                                    wire:click="remove" class="btn btn-danger"
+                                    data-bs-dismiss="modal">Supprimer</button>
+                                <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
+                            @else
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                            @endif
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -55,8 +46,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($unit['name'])
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $unit['name'] }}</h5>
+                        @isset($unitName)
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $unitName }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -109,8 +100,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        @isset($employee['name'])
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $employee['name'] }}</h5>
+                        @isset($employeeName)
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $employeeName }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -242,6 +233,7 @@
                                 <th class="fw-normal">{{ $employee->name }}</th>
                                 <th><button class="btn" data-bs-toggle="modal" data-bs-target="#employeeModal"
                                         wire:click="getDataEmployee('{{ $employee }}')">⚙</button>
+
                                 </th>
                                 {{-- <th><input class="ms-3 me-1 mb-3" type="checkbox" id="selectDepartment"
                                         name="selectDepartment"></th>
@@ -254,9 +246,3 @@
         </div>
     </main>
 </div>
-{{-- foreach ($department->units as $unit) {
-            echo "Unité: " . $unit->name . "\n";
-            foreach ($unit->employees as $employee) {
-                echo "Employé: " . $employee->name . "\n";
-            }
-        } --}}
