@@ -349,7 +349,6 @@ class TableauComponent extends Component
 
     private function getItems()
     {
-        // Votre code initial pour récupérer les éléments
         if ($this->alerte == true) {
             $result = Item::whereRaw('quantity < lowest')
                 ->where(function ($query) {

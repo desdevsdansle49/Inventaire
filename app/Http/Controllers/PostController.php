@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
-use App\Models\Post;
-use Illuminate\Http\Request;
-
 class PostController extends Controller
 {
     public function tableau()
@@ -17,10 +13,12 @@ class PostController extends Controller
     {
         return view('stats');
     }
+
     public function logs()
     {
         return view('historique');
     }
+
     public function catTab()
     {
         return view('catTab');
