@@ -1,5 +1,5 @@
 @extends('layouts.home')
 
 @section('content')
-    @livewire('tableau-component')
+    @livewire('logs-component')
 @endsection

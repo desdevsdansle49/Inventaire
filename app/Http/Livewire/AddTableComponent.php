@@ -9,7 +9,7 @@ use App\Models\LogQuantity;
 use App\Models\LogHisto;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CatTab extends Component
+class AddTableComponent extends Component
 {
     public $query;
     public $fromEdit = False;
@@ -115,7 +115,7 @@ class CatTab extends Component
     {
         $this->result = Category::where('name', 'like', '%' . $this->query . '%')->orderBy('name', 'ASC')->paginate(10);
 
-        return view('livewire.cat-tab', [
+        return view('livewire.add-table-component', [
             'items' => $this->result,
             'listItem' => $this->listItem,
         ]);

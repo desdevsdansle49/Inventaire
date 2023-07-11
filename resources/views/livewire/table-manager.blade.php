@@ -1,6 +1,6 @@
 <div>
     @if ($showFirstTable)
-        @livewire('cat-tab')
+        @livewire('add-table-component')
     @else
         @livewire('department-table')
     @endif

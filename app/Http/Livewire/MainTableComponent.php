@@ -11,14 +11,10 @@ use App\Models\Item;
 use App\Models\LogHisto;
 use App\Models\LogQuantity;
 use App\Models\Transaction;
-use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
-use phpDocumentor\Reflection\PseudoTypes\True_;
 
-class TableauComponent extends Component
+class MainTableComponent extends Component
 {
 
     //rendering 
@@ -360,8 +356,7 @@ class TableauComponent extends Component
                 ->orWhere('Barcode', '=', $this->query)
                 ->orWhere('category_id', 'like', (Category::where('Name', 'like', '%' . $this->query . '%')->get('id')[0]->id));
         } else {
-            $result = Item::where('Name', 'like', '%' . $this->query . '%')
-                ->orWhere('Barcode', '=', $this->query);
+            $result = Item::shearchResult($this->query);
         }
 
         return $result->orderBy('name', 'ASC')->paginate($this->perPage);
@@ -404,7 +399,7 @@ class TableauComponent extends Component
         $units = $this->getUnits();
         $employees = $this->getEmployees();
 
-        return view('livewire.tableau-component', compact('items', 'categories', 'departments', 'units', 'employees'));
+        return view('livewire.main-table-component', compact('items', 'categories', 'departments', 'units', 'employees'));
     }
 
 
