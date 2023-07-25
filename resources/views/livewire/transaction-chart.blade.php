@@ -4,27 +4,26 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <label for="itemSelect">Select an item:</label>
+                        <label for="itemSelect">Choisir un item:</label>
                         <select id="itemSelect">
-                            <option wire:model="itemName" value="">All Items</option>
+                            <option wire:model="itemName" value="">Tous les items</option>
                             @foreach ($items as $item)
                                 <option value="{{ $item->name }}">{{ $item->name }}</option>
                             @endforeach
                         </select>
-
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
-                        <h3>Department Transactions</h3>
+                    <div class="col-md-4 ">
+                        <h3 class="ps-3 d-flex justify-content-center">Departement</h3>
                         <canvas id="departmentChart" width="400" height="400"></canvas>
                     </div>
                     <div class="col-md-4">
-                        <h3>Unit Transactions</h3>
+                        <h3 class="ps-3 d-flex justify-content-center">Unit</h3>
                         <canvas id="unitChart" width="400" height="400"></canvas>
                     </div>
                     <div class="col-md-4">
-                        <h3>Employee Transactions</h3>
+                        <h3 class="ms-3 d-flex justify-content-center">Employee</h3>
                         <canvas id="employeeChart" width="400" height="400"></canvas>
                     </div>
                 </div>
@@ -36,26 +35,20 @@
                 const units = @json($units);
                 const employees = @json($employees);
 
-                function getRandomHSLColor() {
-                    const hue = Math.floor(Math.random() * 360);
-                    const saturation = 50 + Math.floor(Math.random() * 30); // Saturation entre 50 et 80
-                    const lightness = 40 + Math.floor(Math.random() * 30); // Luminosité entre 40 et 70
-                    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-                }
+                // Couleurs plus professionnelles
+                const professionalColors = [
+                    "#708090", "#778899", "#2F4F4F", "#696969", "#808080", "#A9A9A9", "#C0C0C0"
+                ];
 
-                function generateUniqueColors(count) {
-                    const colors = new Set();
-                    while (colors.size < count) {
-                        colors.add(getRandomHSLColor());
-                    }
-                    return Array.from(colors);
+                function getProfessionalColor(index) {
+                    return professionalColors[index % professionalColors.length];
                 }
 
                 function createChartData(data, selectedItem) {
                     const labels = data.map(d => d.name);
                     const values = data.map(d => selectedItem ? d.items.find(item => item.itemName === selectedItem)?.itemNumber ||
                         0 : d.total);
-                    const backgroundColors = generateUniqueColors(data.length);
+                    const backgroundColors = data.map((_, index) => getProfessionalColor(index));
 
                     return {
                         labels: labels,
@@ -65,6 +58,12 @@
                         }]
                     };
                 }
+
+                const chartOptions = {
+                    animation: {
+                        duration: 0
+                    }
+                };
 
                 function updateCharts(selectedItem) {
                     departmentPieChart.data = createChartData(departments, selectedItem);
@@ -81,18 +80,21 @@
                 const departmentPieChart = new Chart(departmentCtx, {
                     type: 'pie',
                     data: createChartData(departments),
+                    options: chartOptions
                 });
 
                 const unitCtx = document.getElementById('unitChart').getContext('2d');
                 const unitPieChart = new Chart(unitCtx, {
                     type: 'pie',
                     data: createChartData(units),
+                    options: chartOptions
                 });
 
                 const employeeCtx = document.getElementById('employeeChart').getContext('2d');
                 const employeePieChart = new Chart(employeeCtx, {
                     type: 'pie',
                     data: createChartData(employees),
+                    options: chartOptions
                 });
 
                 const itemSelect = document.getElementById('itemSelect');

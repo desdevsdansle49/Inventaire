@@ -23,4 +23,15 @@ class Transaction extends Model
     {
         return $this->belongsTo(Unit::class);
     }
+
+    public static function createTransaction($item_id, $category_id, $department, $unit, $employee)
+    {
+        Transaction::insert([
+            'item_id' => $item_id,
+            'category_id' => $category_id,
+            'department_id' => Department::idFromName($department),
+            'unit_id' => Unit::idFromName($unit),
+            'employee_id' => Employee::where('name', $employee)->get('id')[0]->id,
+        ]);
+    }
 }

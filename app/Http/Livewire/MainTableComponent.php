@@ -115,7 +115,7 @@ class MainTableComponent extends Component
             'fournisseur' => $this->fournisseur,
             'note' => $this->note,
             'emplacement' => $this->emplacement,
-            'category_id' => (Category::where('name', 'like', $this->category_inc)->get('id'))[0]->id
+            'category_id' => Category::idFromName($this->category_inc)
         ]);
 
 
@@ -154,8 +154,7 @@ class MainTableComponent extends Component
             return;
         }
 
-        Item::where('category_id', Category::where('name', $this->category)->get('id')[0]->id)->update(['category_id' => Category::where('name', '-')->get('id')[0]->id]);
-        Category::where('Name', '=', $this->category)->delete();
+        Category::removeCategory($this->category);
 
         $this->checkHisto();
         $this->addHisto($this->category, 'Catégorie supprimée');
@@ -175,12 +174,12 @@ class MainTableComponent extends Component
         elseif ($DUE == 'unit')
             Unit::insert([
                 'name' => $this->$DUE,
-                'department_id' => Department::where('name', '=', $this->department)->get('id')[0]->id
+                'department_id' => Department::idFromName($this->department)
             ]);
         elseif ($DUE == 'employee')
             Employee::insert([
                 'name' => $this->$DUE,
-                'unit_id' => Unit::where('name', '=', $this->unit)->get('id')[0]->id
+                'unit_id' => Unit::idFromName($this->department)
             ]);
 
         $this->checkHisto();
@@ -221,14 +220,14 @@ class MainTableComponent extends Component
 
     public function createTransaction()
     {
-        Transaction::insert([
-            'item_id' => $this->item_id,
-            'category_id' => $this->category_id,
-            'department_id' => Department::where('name', $this->department)->get('id')[0]->id,
-            'unit_id' => Unit::where('name', $this->unit)->get('id')[0]->id,
-            'employee_id' => Employee::where('name', $this->employee)->get('id')[0]->id,
+        Transaction::createTransaction(
+            $this->item_id,
+            $this->category_id,
+            $this->department,
+            $this->unit,
+            $this->employee,
 
-        ]);
+        );
     }
 
     public function remove()

@@ -26,4 +26,6 @@ class Item extends Model
         return Item::where('Name', 'like', '%' . $query . '%')
             ->orWhere('Barcode', '=', $query);
     }
+
+    
 }

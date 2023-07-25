@@ -1,10 +1,26 @@
 <div class="bg-white rounded p-5 m-4">
     <main role="main" class="container">
 
-        <button type="button" class="btn mb-3 bgBtn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-            wire:click=false>
-            Nouvelle catégorie
-        </button>
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn mb-3 bgBtn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                wire:click=false>
+                Nouvelle catégorie
+            </button>
+
+            <div class="d-flex flex-column">
+                <label>
+                    <input type="radio" value="add" wire:change="$emitUp('toggleTableEvent')">
+                    Catégorie
+                </label>
+                <label>
+
+                    <input type="radio" value="department" wire:change="$emitUp('toggleTableEvent')" checked>
+                    Département
+                </label>
+            </div>
+
+        </div>
+
 
 
         {{-- Modals --}}
@@ -14,13 +30,13 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         @isset($departmentName)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $departmentName }}</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $departmentName2 }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <input wire:model="name" type="text" class="form-control">
-                        @error('name')
+                        <input wire:model="departmentName" type="text" class="form-control">
+                        @error('departmentName')
                             <div class="alert alert-danger mt-2" role="alert">
                                 {{ $message }}
                             </div>
@@ -30,7 +46,7 @@
                                 <button onclick="confirm('Etes vous sur ?') || event.stopImmediatePropagation()"
                                     wire:click="remove" class="btn btn-danger"
                                     data-bs-dismiss="modal">Supprimer</button>
-                                <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
+                                <button wire:click="editDepartment" class="ms-2 btn btn-primary">Sauvegarder</button>
                             @else
                                 <button type="submit" class="btn btn-primary">Ajouter</button>
                             @endif
@@ -47,13 +63,19 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         @isset($unitName)
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $unitName }}</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $unitName2 }}</h5>
                         @endisset
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <input wire:model="unitName" type="text" class="form-control">
+                        @error('unitName')
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {{ $message }}
+                            </div>
+                        @enderror
                         @isset($linkedDepartment->id)
-                            <select wire:model="selectForUnit">
+                            <select wire:model="selectForUnit" class="mt-3">
                                 @foreach ($allDepartment as $item)
                                     <option value="{{ $item->id }}">
                                         {{ $item->name }}
@@ -61,11 +83,13 @@
                                 @endforeach
                             </select>
                         @endisset
-                        <button
-                            onclick="confirm('Etes vous sur de supprimer cette unité ?') || event.stopImmediatePropagation()"
-                            wire:click="removeUnit" type="button" class="btn btn-danger"
-                            data-bs-dismiss="modal">Supprimer</button>
-                        <button wire:click="editUnit" class="btn btn-primary">Sauvegarder</button>
+                        <div class=" mt-3 d-flex justify-content-sm-end">
+                            <button
+                                onclick="confirm('Etes vous sur de supprimer cette unité ?') || event.stopImmediatePropagation()"
+                                wire:click="removeUnit" type="button" class="btn btn-danger"
+                                data-bs-dismiss="modal">Supprimer</button>
+                            <button wire:click="editUnit" class=" ms-2 btn btn-primary">Sauvegarder</button>
+                        </div>
                         {{-- form --}}
                         {{-- <form wire:submit.prevent>
 
@@ -174,14 +198,17 @@
                     </thead>
                     <tbody>
                         @foreach ($resultDepartment as $department)
-                            <tr>
-                                <th></th>
-                                <th class="fw-normal">{{ $department->name }}</th>
-                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#departmentModal"
-                                        wire:click="getDataDepartment('{{ $department }}')">⚙</button>
-                                </th>
-                            </tr>
-                            </tr>
+                            @if ($department->name != '-')
+                                <tr>
+                                    <th></th>
+                                    <th class="fw-normal">{{ $department->name }}</th>
+                                    <th><button class="btn" data-bs-toggle="modal"
+                                            data-bs-target="#departmentModal"
+                                            wire:click="getDataDepartment('{{ $department }}')">⚙</button>
+                                    </th>
+                                </tr>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -200,14 +227,16 @@
                     </thead>
                     <tbody>
                         @foreach ($resultUnit as $unit)
-                            <tr>
-                                <th></th>
-                                <th class="fw-normal">{{ $unit->name }}</th>
-                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#unitModal"
-                                        wire:click="getDataUnit('{{ $unit }}')">⚙</button>
-                                </th>
-                            </tr>
-                            </tr>
+                            @if ($unit->name != '-')
+                                <tr>
+                                    <th></th>
+                                    <th class="fw-normal">{{ $unit->name }}</th>
+                                    <th><button class="btn" data-bs-toggle="modal" data-bs-target="#unitModal"
+                                            wire:click="getDataUnit('{{ $unit }}')">⚙</button>
+                                    </th>
+                                </tr>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -228,17 +257,19 @@
                     </thead>
                     <tbody>
                         @foreach ($resultEmployee as $employee)
-                            <tr>
-                                <th></th>
-                                <th class="fw-normal">{{ $employee->name }}</th>
-                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#employeeModal"
-                                        wire:click="getDataEmployee('{{ $employee }}')">⚙</button>
+                            @if ($employee->name != '-')
+                                <tr>
+                                    <th></th>
+                                    <th class="fw-normal">{{ $employee->name }}</th>
+                                    <th><button class="btn" data-bs-toggle="modal" data-bs-target="#employeeModal"
+                                            wire:click="getDataEmployee('{{ $employee }}')">⚙</button>
 
-                                </th>
-                                {{-- <th><input class="ms-3 me-1 mb-3" type="checkbox" id="selectDepartment"
+                                    </th>
+                                    {{-- <th><input class="ms-3 me-1 mb-3" type="checkbox" id="selectDepartment"
                                         name="selectDepartment"></th>
                                  --}}
-                            </tr>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

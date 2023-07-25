@@ -23,4 +23,25 @@ class Unit extends Model
     {
         return $this->hasMany(Employee::class);
     }
+
+    public static function removeUnit($unitId)
+    {
+        Employee::where('unit_id', $unitId)->update(['unit_id' => '1']);
+        Unit::where('id', $unitId)->delete();
+    }
+
+    public static function editUnit($unitId, $selectForUnit)
+    {
+        Unit::where('id', $unitId)->update(['department_id' => $selectForUnit]);
+    }
+
+    public static function searchResult($query)
+    {
+        return self::where('name', 'like', '%' . $query . '%')->orderBy('name', 'ASC')->paginate(10);
+    }
+
+    public static function idFromName($unit)
+    {
+        return Unit::where('name', '=', $unit)->get('id')[0]->id;
+    }
 }

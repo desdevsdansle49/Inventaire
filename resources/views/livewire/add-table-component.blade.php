@@ -1,10 +1,28 @@
 <div class="bg-white rounded p-5 m-4">
     <main role="main" class="container">
 
-        <button type="button" class="btn mb-3 bgBtn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-            wire:click=false>
-            Nouvelle catégorie
-        </button>
+
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn mb-3 bgBtn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                wire:click=false>
+                Nouvelle catégorie
+            </button>
+
+            <div class="d-flex flex-column">
+                <label>
+                    <input type="radio" value="add" wire:change="$emitUp('toggleTableEvent')" checked>
+                    Catégorie
+                </label>
+                <label>
+
+                    <input type="radio" value="department" wire:change="$emitUp('toggleTableEvent')"> Département
+                </label>
+            </div>
+
+        </div>
+
+
+
 
         <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -50,7 +68,7 @@
         </div>
 
         <div wire:ignore.self class="modal fade" id="itemListModal" tabindex="-1" aria-labelledby="itemListLabel"
-            aria-hidden="true" >
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -83,15 +101,17 @@
                 </thead>
                 <tbody>
                     @foreach ($items as $item)
-                        <tr>
-                            <th></th>
-                            <th class="fw-normal">{{ $item->name }}</th>
-                            <th><button class="btn" data-bs-toggle="modal" data-bs-target="#itemListModal"
-                                    wire:click="defineData('{{ $item }}')">⚙</button>
-                            <th><button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                    wire:click="defineData('{{ $item }}')">⚙</button>
-                            </th>
-                        </tr>
+                        @if ($item->name != '-')
+                            <tr>
+                                <th></th>
+                                <th class="fw-normal">{{ $item->name }}</th>
+                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#itemListModal"
+                                        wire:click="defineData('{{ $item }}')">☰</button>
+                                <th><button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                        wire:click="defineData('{{ $item }}')">⚙</button>
+                                </th>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>

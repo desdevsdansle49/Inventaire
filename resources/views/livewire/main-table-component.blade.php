@@ -277,9 +277,9 @@
 
         @if ($fromCreate)
             <!-- add button -->
-            <button type="button" wire:click="false" class="btn mb-3 bgBtn" data-bs-toggle="modal"
+            <button type="button" wire:click="false" class="btn mb-3 btn-primary" data-bs-toggle="modal"
                 data-bs-target="#exampleModal">
-                Nouvelle item
+                Nouvel item
             </button>
         @endif
 

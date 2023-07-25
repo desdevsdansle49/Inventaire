@@ -39,17 +39,20 @@ class DepartmentTable extends Component
     public $fromEdit = false;
 
     protected $rules = [
-        'name' => 'required | unique:items| String',
-        'quantity' => 'required | numeric | gte:0',
-        'lowest' => 'nullable | numeric | gte:0',
+        'departmentName' => 'required | unique:items| String',
+        'unitName' => 'required | unique:items| String',
+        'employeeName' => 'required | unique:items| String',
+
     ];
 
     protected $messages = [
-        'name.required' => 'Champ obligatoire',
-        'name.unique' => 'Cette item existe déjà',
-        'quantity.required' => 'Champ obligatoire',
-        'quantity.gte' => 'Champ > 0',
-        'lowest.numeric' => 'Champ > 0'
+        'departmentName.required' => 'Champ obligatoire',
+        'departmentName.unique' => 'Cette item existe déjà',
+        'unitName.required' => 'Champ obligatoire',
+        'unitName.unique' => 'Cette item existe déjà',
+        'employeeName.required' => 'Champ obligatoire',
+        'employeeName.unique' => 'Cette item existe déjà',
+
     ];
 
     public function getDataDepartment($department)
@@ -85,46 +88,48 @@ class DepartmentTable extends Component
 
     public function removeUnit()
     {
-        Employee::where('unit_id', $this->unit['id'])->update(['unit_id' => '1']);
-        Unit::where('id', $this->unit['id'])->delete();
+        Unit::removeUnit($this->unitId);
     }
 
     public function removeEmployee()
     {
-        Employee::where('id', $this->employee['id'])->delete();
+        Employee::removeEmployee($this->employeeId);
     }
 
     public function removeDepartment()
     {
-        Unit::where('department_id', $this->department['id'])->update(['department_id' => '1']);
-        Department::where('id', $this->department['id'])->delete();
+        Department::removeDepartment($this->departmentId);
     }
 
     public function editUnit()
     {
         if ($this->selectForUnit != $this->linkedDepartment['id']) {
-            Unit::where('id', $this->unit['id'])->update(['department_id' => $this->selectForUnit]);
+            Unit::editUnit($this->unitId, $this->selectForUnit);
+        }
+        if ($this->unitName2 != $this->unitName) {
+            Unit::where('id', $this->unitId)->update(['name' => $this->unitName]);
         }
     }
 
     public function editEmployee()
     {
         if ($this->selectForEmployee != $this->linkedUnit['id']) {
-            Employee::where('id', $this->employee['id'])->update(['unit_id' => $this->selectForEmployee]);
+            Employee::editEmployee($this->employeeId, $this->selectForEmployee);
         }
     }
 
     public function editDepartment()
     {
+        $this->validateOnly($this->departmentName);
+        Department::where('name', $this->departmentName2)->update(['name' => $this->departmentName]);
     }
 
     public function render()
     {
 
-        $this->resultDepartment = Department::where('name', 'like', '%' . $this->query . '%')->orderBy('name', 'ASC')->paginate(10);
+        $this->resultDepartment = Department::searchResult($this->query);
         $this->resultUnit = Unit::where('name', 'like', '%' . $this->query . '%')->orderBy('name', 'ASC')->paginate(10);
         $this->resultEmployee = Employee::where('name', 'like', '%' . $this->query . '%')->orderBy('name', 'ASC')->paginate(10);
-
         return view('livewire.department-table', [
             'resultDepartment' => $this->resultDepartment,
             'resultUnit' => $this->resultUnit,

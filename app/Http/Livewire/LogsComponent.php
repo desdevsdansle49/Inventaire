@@ -13,7 +13,7 @@ class LogsComponent extends Component
     public function render()
     {
         return view('livewire.logs-component', [
-            'LogHisto' => LogHisto::orderBy('id', 'desc')->paginate(10),
+            'LogHisto' => LogHisto::fetchLogs(),
             'LogQuantity' => LogQuantity::orderBy('id', 'desc')->paginate(10)
         ]);
     }

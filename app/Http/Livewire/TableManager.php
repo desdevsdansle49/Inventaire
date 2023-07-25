@@ -7,6 +7,7 @@ use Livewire\Component;
 class TableManager extends Component
 {
     public $showFirstTable = true;
+    protected $listeners = ['toggleTableEvent' => 'toggleTable'];
 
     public function toggleTable()
     {

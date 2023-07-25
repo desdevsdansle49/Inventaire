@@ -25,7 +25,7 @@ class AddTableComponent extends Component
 
     protected $messages = [
         'name.required' => 'Champ obligatoire',
-        'name.unique' => 'Cette item existe déjà',
+        'name.unique' => 'Cette categorie existe déjà',
     ];
 
     public function updatingQuery()
@@ -53,10 +53,7 @@ class AddTableComponent extends Component
             return;
         }
 
-        $categoryId = Category::firstWhere('name', $this->name)->id;
-        $newCategoryId = Category::firstWhere('name', '-')->id;
-        Item::where('category_id', $categoryId)->update(['category_id' => $newCategoryId]);
-        Category::where('Name', '=', $this->name)->delete();
+        Category::RemoveCategory($this->name);
 
         $this->checkHisto();
         $this->addHisto($this->name, 'Catégorie supprimée');
@@ -77,6 +74,13 @@ class AddTableComponent extends Component
                 'action' => $action
             ]);
         }
+    }
+
+    public function edit()
+    {
+        $this->validate();
+        Category::where('Name', $this->name2)->update(['name' => $this->name]);
+        $this->name2 = $this->name;
     }
 
     public function checkHisto()
@@ -113,8 +117,7 @@ class AddTableComponent extends Component
 
     public function render()
     {
-        $this->result = Category::where('name', 'like', '%' . $this->query . '%')->orderBy('name', 'ASC')->paginate(10);
-
+        $this->result = Category::searchResult($this->query);
         return view('livewire.add-table-component', [
             'items' => $this->result,
             'listItem' => $this->listItem,
