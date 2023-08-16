@@ -1,10 +1,64 @@
 <div class="bg-white rounded p-5 m-4">
+
     <main role="main" class="container">
 
+        <div wire:ignore.self class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h5 class="modal-title" id="exampleModalLabel">Nouvelle entitée</h5>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <select wire:model="selectEntity" name="type" class="mb-3">
+                            <option value="department" selected>Department</option>
+                            <option value="unit">Unit</option>
+                            <option value="employee">Employee</option>
+                        </select>
+
+                        <input wire:model="newInput" type="text" class="form-control">
+                        @error('newInput')
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {{ $message }}
+                            </div>
+                        @enderror
+
+                        @if ($selectEntity == 'unit')
+                            @isset($allDepartment)
+                                <select wire:model="selectNewLink" class="mt-3">
+                                    @foreach ($allDepartment as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endisset
+                        @endif
+                        @if ($selectEntity == 'employee')
+                            @isset($allUnit)
+                                <select wire:model="selectNewLink" class="mt-3">
+                                    @foreach ($allUnit as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endisset
+                        @endif
+                        <div class=" mt-3 d-flex justify-content-sm-end">
+                            <button wire:click="wichEntityToAdd" class=" ms-2 btn btn-primary">Sauvegarder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between">
-            <button type="button" class="btn mb-3 bgBtn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                wire:click=false>
-                Nouvelle catégorie
+            <button type="button" class="btn mb-3 bgBtn" data-bs-toggle="modal" data-bs-target="#newModal">
+                Nouvelle entitée
             </button>
 
             <div class="d-flex flex-column">
@@ -43,9 +97,11 @@
                         @enderror
                         <div class=" mt-3 d-flex justify-content-sm-end">
                             @if ($fromEdit)
-                                <button onclick="confirm('Etes vous sur ?') || event.stopImmediatePropagation()"
-                                    wire:click="remove" class="btn btn-danger"
-                                    data-bs-dismiss="modal">Supprimer</button>
+                                <div></div>
+                                <button
+                                    onclick="confirm('Etes vous sur de supprimer ce département ?') || event.stopImmediatePropagation()"
+                                    type="button" data-bs-dismiss="modal" wire:click="removeDepartment"
+                                    class="btn btn-danger">Supprimer</button>
                                 <button wire:click="editDepartment" class="ms-2 btn btn-primary">Sauvegarder</button>
                             @else
                                 <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -90,30 +146,6 @@
                                 data-bs-dismiss="modal">Supprimer</button>
                             <button wire:click="editUnit" class=" ms-2 btn btn-primary">Sauvegarder</button>
                         </div>
-                        {{-- form --}}
-                        {{-- <form wire:submit.prevent>
-
-                            <input wire:model="name" type="text" class="form-control">
-                            @error('name')
-                                <div class="alert alert-danger mt-2" role="alert">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            <div class=" mt-3 d-flex justify-content-sm-end">
-                                @if ($fromEdit)
-                                    <div>
-                                        <button
-                                            onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
-                                            wire:click="removeCategory" type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">Supprimer</button>
-                                        <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
-                                    </div>
-                                @else
-                                    <button type="submit" class="btn btn-primary"
-                                        wire:click="addCategory">Ajouter</button>
-                                @endif
-                            </div>
-                        </form> --}}
                     </div>
                 </div>
             </div>
@@ -127,12 +159,19 @@
                         @isset($employeeName)
                             <h5 class="modal-title" id="exampleModalLabel">{{ $employeeName }}</h5>
                         @endisset
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
                         @isset($linkedUnit->id)
-                            <select wire:model="selectForEmployee" id="itemSelect">
+                            <input wire:model="employeeName" type="text" class="form-control">
+                            @error('employeeName')
+                                <div class="alert alert-danger mt-2" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <select wire:model="selectForEmployee" id="itemSelect" class="mt-3">
                                 @foreach ($allUnit as $item)
                                     <option value="{{ $item->id }}">
                                         {{ $item->name }}
@@ -140,36 +179,13 @@
                                 @endforeach
                             </select>
                         @endisset
-                        <button
-                            onclick="confirm('Etes vous sur de supprimer cette unité ?') || event.stopImmediatePropagation()"
-                            wire:click="removeEmployee" type="button" class="btn btn-danger"
-                            data-bs-dismiss="modal">Supprimer</button>
-                        <button wire:click="editEmployee" class="btn btn-primary">Sauvegarder</button>
-
-                        {{-- form --}}
-                        {{-- <form wire:submit.prevent>
-
-                            <input wire:model="name" type="text" class="form-control">
-                            @error('name')
-                                <div class="alert alert-danger mt-2" role="alert">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                            <div class=" mt-3 d-flex justify-content-sm-end">
-                                @if ($fromEdit)
-                                    <div>
-                                        <button
-                                            onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
-                                            wire:click="removeCategory" type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">Supprimer</button>
-                                        <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
-                                    </div>
-                                @else
-                                    <button type="submit" class="btn btn-primary"
-                                        wire:click="addCategory">Ajouter</button>
-                                @endif
-                            </div>
-                        </form> --}}
+                        <div class=" mt-3 d-flex justify-content-sm-end">
+                            <button
+                                onclick="confirm('Etes vous sur de supprimer cette unité ?') || event.stopImmediatePropagation()"
+                                wire:click="removeEmployee" type="button" class="btn btn-danger"
+                                data-bs-dismiss="modal">Supprimer</button>
+                            <button wire:click="editEmployee" class="btn btn-primary">Sauvegarder</button>
+                        </div>
                     </div>
                 </div>
             </div>

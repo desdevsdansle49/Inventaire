@@ -22,7 +22,7 @@
                     <a class="nav-link @if ($routename == 'create') active @endif" href="create">Ajout</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @if ($routename == 'catTab') active @endif" href="catTab">Catégories</a>
+                    <a class="nav-link @if ($routename == 'catTab') active @endif" href="catTab">Ressources</a>
                 </li>
             </ul>
             {{-- <div class="d-flex" role="debug">

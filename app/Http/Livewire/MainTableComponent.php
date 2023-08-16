@@ -62,9 +62,12 @@ class MainTableComponent extends Component
     public $note2;
     public $emplacement2;
 
-    public $department;
-    public $unit;
-    public $employee;
+    public $departments;
+    public $units;
+    public $employees;
+    public $selectedDepartment = 1;
+    public $selectedUnit = 1;
+    public $selectedEmployee = 1;
 
 
     //
@@ -75,16 +78,12 @@ class MainTableComponent extends Component
     protected $rules = [
         'name' => 'required | unique:items| String',
         'quantity' => 'required | numeric | gte:0',
-        // 'category_id' => 'required | unique:categories',
-        'lowest' => 'nullable | numeric | gte:0',
     ];
 
     protected $messages = [
         'name.required' => 'Champ obligatoire',
         'name.unique' => 'Cette item existe déjà',
         'quantity.required' => 'Champ obligatoire',
-        'quantity.gte' => 'Champ > 0',
-        'lowest.numeric' => 'Champ > 0'
     ];
 
     public function mount()
@@ -94,7 +93,42 @@ class MainTableComponent extends Component
         if ($route->uri == "create") {
             $this->fromCreate = True;
         }
+        $this->departments = Department::all();
+        $this->units = Unit::all();
+        $this->employees = Employee::all();
     }
+
+    public function updatedSelectedDepartment($department)
+    {
+        if ($department != 1) {
+            $this->units = Unit::where('department_id', $department)->orWhere('id', 1)->get();
+            $this->employees = Employee::whereIn('unit_id', $this->units->pluck('id'))->orWhere('id', 1)->get();
+        } else {
+            $this->units = Unit::all();
+            $this->employees = Employee::all();
+        }
+        $this->selectedUnit = 1;
+        $this->selectedEmployee = 1;
+    }
+
+    public function updatedSelectedUnit($unit)
+    {
+        if ($unit != 1) {
+            $this->employees = Employee::where('unit_id', $unit)->orWhere('id', 1)->get();
+        } else {
+            $this->employees = Employee::all();
+        }
+        $this->selectedEmployee = 1;
+    }
+
+    public function updatedSelectedEmployee($employee)
+    {
+        $unit = Employee::find($employee)->unit;
+        $this->selectedUnit = $unit->id;
+        $this->selectedDepartment = $unit->department_id;
+    }
+
+
 
     public function addItem()
     {
@@ -160,46 +194,6 @@ class MainTableComponent extends Component
         $this->addHisto($this->category, 'Catégorie supprimée');
     }
 
-    public function addDUE($DUE)
-    {
-        // $this->validateOnly($this->$DUE);
-        $inputName = 'input' . ucfirst($DUE);
-        $this->$inputName = !$this->$inputName;
-
-
-        if ($DUE == 'department')
-            Department::insert([
-                'name' => $this->$DUE,
-            ]);
-        elseif ($DUE == 'unit')
-            Unit::insert([
-                'name' => $this->$DUE,
-                'department_id' => Department::idFromName($this->department)
-            ]);
-        elseif ($DUE == 'employee')
-            Employee::insert([
-                'name' => $this->$DUE,
-                'unit_id' => Unit::idFromName($this->department)
-            ]);
-
-        $this->checkHisto();
-        $this->addHisto($this->$DUE, $DUE . ' crée');
-    }
-
-    public function removeDUE($DUE)
-    {
-        $inputName = 'input' . ucfirst($DUE);
-
-        if ($DUE == 'department')
-            Department::where('name', $this->$DUE)->delete();
-        elseif ($DUE == 'unit')
-            Unit::where('name', $this->$DUE)->delete();
-        elseif ($DUE == 'employee')
-            Employee::where('name', $this->$DUE)->delete();
-
-        $this->checkHisto();
-        $this->addHisto($this->$DUE, $DUE . ' supprimé');
-    }
 
     public function addQuantity($PorM)
     {
@@ -223,10 +217,9 @@ class MainTableComponent extends Component
         Transaction::createTransaction(
             $this->item_id,
             $this->category_id,
-            $this->department,
-            $this->unit,
-            $this->employee,
-
+            $this->selectedDepartment,
+            $this->selectedUnit,
+            $this->selectedEmployee,
         );
     }
 
@@ -294,7 +287,6 @@ class MainTableComponent extends Component
         $this->fournisseur2 = $this->fournisseur = $decodedItem->fournisseur;
         $this->note2 = $this->note = $decodedItem->note;
         $this->emplacement2 = $this->emplacement = $decodedItem->emplacement;
-        $this->department = $this->employee = $this->unit = '-';
     }
 
 
@@ -325,21 +317,14 @@ class MainTableComponent extends Component
 
     public function updatedEmployee()
     {
-        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee || $this->employee == '-') {
-            return;
-        }
-        $tmp = Employee::where('name', '=', $this->employee)->first();
-        $this->unit = (($tmp)->unit)->name;
-        $this->updatedUnit();
     }
 
     public function updatedUnit()
     {
-        if ($this->inputDepartment || $this->inputUnit || $this->inputEmployee || $this->unit == '-') {
-            return;
-        }
-        $tmp = Unit::where('name', '=', $this->unit)->first();
-        $this->department = (($tmp)->department)->name;
+    }
+
+    public function updatedDepartment()
+    {
     }
 
     private function getItems()
@@ -361,44 +346,12 @@ class MainTableComponent extends Component
         return $result->orderBy('name', 'ASC')->paginate($this->perPage);
     }
 
-
-    private function getUnits()
-    {
-        $result = Unit::query()
-            ->when($this->department !== null && $this->department !== '-' && $this->inputDepartment == false, function ($query) {
-                $departmentID = Department::where('name', $this->department)->first()->id;
-                return $query->where('department_id', $departmentID)->orWhere('name', '-');
-            });
-
-        return $result->orderBy('name', 'ASC')->get();
-    }
-
-    private function getEmployees()
-    {
-        $result = Employee::query()
-            ->when($this->unit !== null && $this->unit !== '-' && $this->inputUnit == false, function ($query) {
-                $unitID = Unit::where('name', $this->unit)->first()->id;
-                return $query->where('unit_id', $unitID)->orWhere('name', '-');
-            }, function ($query) {
-                return $query->when($this->department !== null && $this->department !== '-' && $this->inputDepartment == false && $this->inputEmployee == false, function ($query) {
-                    $departmentID = Department::where('name', $this->department)->first()->id;
-                    $unitIds = Unit::where('department_id', $departmentID)->orWhere('name', '-')->pluck('id');
-                    return $query->whereIn('unit_id', $unitIds)->orWhere('name', '-');
-                });
-            });
-
-        return $result->orderBy('name', 'ASC')->get();
-    }
-
     public function render()
     {
         $items = $this->getItems();
         $categories = Category::orderBy('name', 'ASC')->get();
-        $departments = Department::orderBy('name', 'ASC')->get();
-        $units = $this->getUnits();
-        $employees = $this->getEmployees();
 
-        return view('livewire.main-table-component', compact('items', 'categories', 'departments', 'units', 'employees'));
+        return view('livewire.main-table-component', compact('items', 'categories'));
     }
 
 

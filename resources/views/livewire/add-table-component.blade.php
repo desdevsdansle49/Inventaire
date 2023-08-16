@@ -51,7 +51,7 @@
                                 @if ($fromEdit)
                                     <div>
                                         <button
-                                            onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
+                                            onclick="confirm('Etes vous sur de supprimer cette catégorie ?') || event.stopImmediatePropagation()"
                                             wire:click="removeCategory" type="button" class="btn btn-danger"
                                             data-bs-dismiss="modal">Supprimer</button>
                                         <button wire:click="edit" class="btn btn-primary">Sauvegarder</button>
@@ -72,7 +72,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <p>List de tous les items associés</p>
+                        <p>Liste de tous les items associés</p>
                     </div>
                     <div class="modal-body">
                         @foreach ($listItem as $item)
@@ -95,7 +95,7 @@
                     <tr>
                         <th class="th1"></th>
                         <th class="th2">Nom</th>
-                        <th class="th3">Nom</th>
+                        <th class="th3">Association</th>
                         <th class="th7">Editer</th>
                     </tr>
                 </thead>

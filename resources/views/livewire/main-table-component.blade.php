@@ -10,9 +10,9 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             @if ($fromEdit)
-                                <h5 class="modal-title" id="exampleModalLabel">{{ $name }}</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">{{ $name2 }}</h5>
                             @else
-                                <h5 class="modal-title" id="exampleModalLabel">New Item</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Nouvel Item</h5>
                             @endif
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
@@ -67,7 +67,7 @@
 
                                 <div class="d-flex justify-content-between">
                                     <div class="mb-3">
-                                        <label class="form-label">CodeBare</label>
+                                        <label class="form-label">Code barre</label>
                                         <input wire:model="barcode" type="text" class="form-control">
                                     </div>
                                     <div class="mb-3">
@@ -98,12 +98,12 @@
                                                 <option value="{{ $category->name }}">{{ $category->name }}</option>
                                             @endforeach
                                         </select>
-                                        <button wire:click="showInput('category')" type="button"
+                                        {{-- <button wire:click="showInput('category')" type="button"
                                             class="btn btn-secondary">+</button>
                                         <button
                                             onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
                                             wire:click="removeCategory" type="button"
-                                            class="btn btn-secondary">-</button>
+                                            class="btn btn-secondary">-</button> --}}
                                     </div>
                                 @else
                                     <div>
@@ -169,87 +169,27 @@
                             </div>
                         </div>
                         <label class="form-label">Département</label>
-                        @if ($inputDepartment == false)
-                            <div>
-                                <select wire:model="department" class="custom-select ">
-                                    @foreach ($departments as $department)
-                                        <option value="{{ $department->name }}">{{ $department->name }}</option>
-                                    @endforeach
-                                </select>
-                                <button wire:click="showInput('department')" type="button"
-                                    class="btn btn-secondary">+</button>
-                                <button
-                                    onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
-                                    wire:click="removeDUE('department')" type="button"
-                                    class="btn btn-secondary">-</button>
-                            </div>
-                        @else
-                            <div>
-                                <div class="mb-3  border rounded p-3">
-                                    <label class="form-label">Département</label>
-                                    <input wire:model="department" type="text" class="form-control mb-2">
-                                    <button wire:click="showInput('department')" type="button"
-                                        class="btn btn-secondary">Annuler</button>
-                                    <button wire:click="addDUE('department')" type="button"
-                                        class="btn btn-primary">Ajouter</button>
 
-                                </div>
-                            </div>
-                        @endif
-                        @if ($inputUnit == false)
-                            <div>
-                                <select wire:model="unit" class="custom-select ">
-                                    @foreach ($units as $unit)
-                                        <option value="{{ $unit->name }}">{{ $unit->name }}</option>
-                                    @endforeach
-                                </select>
-                                <button wire:click="showInput('unit')" type="button"
-                                    class="btn btn-secondary">+</button>
-                                <button
-                                    onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
-                                    wire:click="removeDUE('unit')" type="button"
-                                    class="btn btn-secondary">-</button>
-                            </div>
-                        @else
-                            <div>
-                                <div class="mb-3  border rounded p-3">
-                                    <label class="form-label">Unité</label>
-                                    <input wire:model="unit" type="text" class="form-control mb-2">
-                                    <button wire:click="showInput('unit')" type="button"
-                                        class="btn btn-secondary">Annuler</button>
-                                    <button wire:click="addDUE('unit')" type="button"
-                                        class="btn btn-primary">Ajouter</button>
+                        <div>
+                            <select wire:model="selectedDepartment">
+                                @foreach ($departments as $department)
+                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
 
-                                </div>
-                            </div>
-                        @endif
-                        @if ($inputEmployee == false)
-                            <div>
-                                <select wire:model="employee" class="custom-select ">
-                                    @foreach ($employees as $employee)
-                                        <option value="{{ $employee->name }}">{{ $employee->name }}</option>
-                                    @endforeach
-                                </select>
-                                <button wire:click="showInput('employee')" type="button"
-                                    class="btn btn-secondary">+</button>
-                                <button
-                                    onclick="confirm('Are you sure you want to remove the user from this group?') || event.stopImmediatePropagation()"
-                                    wire:click="removeDUE('employee')" type="button"
-                                    class="btn btn-secondary">-</button>
-                            </div>
-                        @else
-                            <div>
-                                <div class="mb-3 border rounded p-3">
-                                    <label class="form-label">Employé</label>
-                                    <input wire:model="employee" type="text" class="form-control mb-2">
-                                    <button wire:click="showInput('employee')" type="button"
-                                        class="btn btn-secondary">Annuler</button>
-                                    <button wire:click="addDUE('employee')" type="button"
-                                        class="btn btn-primary">Ajouter</button>
+                            <select wire:model="selectedUnit">
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                @endforeach
+                            </select>
 
-                                </div>
-                            </div>
-                        @endif
+                            <select wire:model="selectedEmployee">
+                                @foreach ($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                     </div>
                     </form>
                 </div>
@@ -305,7 +245,7 @@
 
         <div class="table-responsive">
             <table class="table">
-                <thead class="table-active">
+                <thead class="table-dark">
                     <tr>
                         <th class="th1"></th>
                         <th class="th2">Nom</th>
@@ -313,7 +253,9 @@
                         <th class="th4">Categorie</th>
                         <th class="th5">Fournisseur</th>
                         <th class="th6">Note</th>
-                        <th class="th7">Editer</th>
+                        @if ($fromCreate)
+                            <th class="th7">Editer</th>
+                        @endif
                         <th class="th8"></th>
                     </tr>
                 </thead>

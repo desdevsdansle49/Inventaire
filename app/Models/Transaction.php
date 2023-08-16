@@ -29,9 +29,9 @@ class Transaction extends Model
         Transaction::insert([
             'item_id' => $item_id,
             'category_id' => $category_id,
-            'department_id' => Department::idFromName($department),
-            'unit_id' => Unit::idFromName($unit),
-            'employee_id' => Employee::where('name', $employee)->get('id')[0]->id,
+            'department_id' => $department,
+            'unit_id' => $unit,
+            'employee_id' => $employee,
         ]);
     }
 }

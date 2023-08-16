@@ -36,6 +36,9 @@ class DepartmentTable extends Component
     public $selectForUnit;
     public $test;
 
+    public $newInput;
+    public $selectEntity = 'department';
+    public $selectNewLink = '1';
     public $fromEdit = false;
 
     protected $rules = [
@@ -54,6 +57,7 @@ class DepartmentTable extends Component
         'employeeName.unique' => 'Cette item existe déjà',
 
     ];
+
 
     public function getDataDepartment($department)
     {
@@ -101,6 +105,8 @@ class DepartmentTable extends Component
         Department::removeDepartment($this->departmentId);
     }
 
+
+
     public function editUnit()
     {
         if ($this->selectForUnit != $this->linkedDepartment['id']) {
@@ -116,6 +122,9 @@ class DepartmentTable extends Component
         if ($this->selectForEmployee != $this->linkedUnit['id']) {
             Employee::editEmployee($this->employeeId, $this->selectForEmployee);
         }
+        if ($this->employeeName2 != $this->employeeName) {
+            Employee::where('id', $this->employeeId)->update(['name' => $this->employeeName]);
+        }
     }
 
     public function editDepartment()
@@ -124,8 +133,37 @@ class DepartmentTable extends Component
         Department::where('name', $this->departmentName2)->update(['name' => $this->departmentName]);
     }
 
+    public function wichEntityToAdd()
+    {
+        // dd($this->selectEntity);
+        if ($this->selectEntity == 'department') {
+            $this->addDepartment();
+        }
+        if ($this->selectEntity == 'unit') {
+            $this->addUnit();
+        }
+        if ($this->selectEntity == 'employee') {
+            $this->addEmployee();
+        }
+    }
+
+    public function addDepartment()
+    {
+        Department::insert(['name' => $this->newInput]);
+    }
+    public function addUnit()
+    {
+        Unit::insert(['name' => $this->newInput, 'department_id' => $this->selectNewLink]);
+    }
+    public function addEmployee()
+    {
+        Employee::insert(['name' => $this->newInput, 'unit_id' => $this->selectNewLink]);
+    }
+
     public function render()
     {
+        $this->allDepartment = Department::all();
+        $this->allUnit = Unit::all();
 
         $this->resultDepartment = Department::searchResult($this->query);
         $this->resultUnit = Unit::where('name', 'like', '%' . $this->query . '%')->orderBy('name', 'ASC')->paginate(10);
