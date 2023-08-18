@@ -10,10 +10,10 @@
                 <table class="table">
                     <thead class="table-dark">
                         <tr>
-                            <th class="th1"></th>
-                            <th class="th2">Nom</th>
+                            <th class="th1" style="padding: 0%"></th>
+                            <th class="th6">Nom</th>
                             <th class="th3">Action</th>
-                            <th class="th4">Temps</th>
+                            <th>Temps</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,7 +23,7 @@
                                     <th></th>
                                     <th class="fw-normal">{{ $item->name }}</th>
                                     <th class="fw-normal">{{ $item->action }}</th>
-                                    <th class="fw-normal">{{ $item->created_at }}</th>
+                                    <th class="fw-normal">{{ $item->formatted_created_at }}</th>
 
                                 </tr>
                             @endforeach
@@ -33,7 +33,7 @@
                                     <th></th>
                                     <th class="fw-normal">{{ $item->name }}</th>
                                     <th class="fw-normal">{{ $item->action }}</th>
-                                    <th class="fw-normal">{{ $item->created_at }}</th>
+                                    <th class="fw-normal">{{ $item->formatted_created_at }}</th>
 
                                 </tr>
                             @endforeach

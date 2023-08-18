@@ -202,10 +202,10 @@ class MainTableComponent extends Component
         if (is_numeric($this->addQuantity)) {
             if ($PorM == "-") {
                 Item::where('name', '=', $this->name)->decrement('quantity', $this->addQuantity);
-                $this->addHisto($this->name, 'Quantité - ' . $this->addQuantity, True);
+                $this->addHisto($this->name, '- ' . $this->addQuantity, True);
             } else if ($PorM == "+") {
                 Item::where('name', '=', $this->name)->increment('quantity', $this->addQuantity);
-                $this->addHisto($this->name, 'Quantité - ' . $this->addQuantity, True);
+                $this->addHisto($this->name, $this->addQuantity, True);
             }
         }
         $this->createTransaction();

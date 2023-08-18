@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class LogHisto extends Model
 {
     use HasFactory;
 
-    public static function fetchLogs()
+    public function getFormattedCreatedAtAttribute()
     {
-        return self::orderBy('id', 'desc')->paginate(10);
+        return Carbon::parse($this->attributes['created_at'])->format('H:i:s d-m-Y');
     }
 }
