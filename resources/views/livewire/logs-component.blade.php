@@ -14,6 +14,9 @@
                             <th class="th6">Nom</th>
                             <th class="th3">Action</th>
                             <th>Temps</th>
+                            @if ($this->altTable == false)
+                                <th>qui</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -34,7 +37,7 @@
                                     <th class="fw-normal">{{ $item->name }}</th>
                                     <th class="fw-normal">{{ $item->action }}</th>
                                     <th class="fw-normal">{{ $item->formatted_created_at }}</th>
-
+                                    <th class="fw-normal">{{ $item->department_id }}</th>
                                 </tr>
                             @endforeach
                         @endif
