@@ -13,16 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('quantity');
-            $table->string('barcode')->nullable();
-            $table->integer('lowest')->nullable();
-            $table->string('fournisseur')->nullable();
-            $table->string('note')->nullable();
-            $table->string('emplacement')->nullable();
-
             $table->timestamps();
         });
     }
@@ -34,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('departments');
     }
 };

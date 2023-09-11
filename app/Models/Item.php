@@ -14,4 +14,18 @@ class Item extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public static function shearchResult($query)
+    {
+        return Item::where('Name', 'like', '%' . $query . '%')
+            ->orWhere('Barcode', '=', $query);
+    }
+
+    
 }

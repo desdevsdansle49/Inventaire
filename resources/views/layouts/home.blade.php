@@ -12,6 +12,9 @@
     <!-- CSS only -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <style>
@@ -30,7 +33,7 @@
     }
 
     body {
-        background-color: darkgrey;
+        background-color: lightgray;
     }
 
     a {
@@ -86,7 +89,11 @@
     }
 
     .th8 {
-        width: 20px;
+        width: 5px;
+    }
+
+    .bgBtn {
+        background-color: aliceblue;
     }
 </style>
 
@@ -98,9 +105,12 @@
     @yield('content')
 
     @livewireScripts
-    
+
     <!-- JavaScript Bundle with Popper -->
     <script src="{{ asset('js/bootstrap.bundle.js') }}"></script>
+
+
+
 
 </body>
 

@@ -13,16 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('quantity');
-            $table->string('barcode')->nullable();
-            $table->integer('lowest')->nullable();
-            $table->string('fournisseur')->nullable();
-            $table->string('note')->nullable();
-            $table->string('emplacement')->nullable();
-
+            $table->unsignedBigInteger('unit_id')->default(0);
+            $table->foreign('unit_id')->references('id')->on('units');
             $table->timestamps();
         });
     }
@@ -34,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('employees');
     }
 };

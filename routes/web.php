@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\PostController::class, 'tableau']);
-Route::get('/stats', [\App\Http\Controllers\PostController::class, 'stats']);
-Route::get('/alerts', [\App\Http\Controllers\PostController::class, 'alerts']);
+Route::get('/', [\App\Http\Controllers\MainController::class, 'mainTable']);
+Route::get('/stats', [\App\Http\Controllers\MainController::class, 'stats']);
+Route::get('/logs', [\App\Http\Controllers\MainController::class, 'logs']);
+Route::get('/create', [\App\Http\Controllers\MainController::class, 'mainTable']);
+Route::get('/catTab', [\App\Http\Controllers\MainController::class, 'addTable']);
 
-Route::get('/infophp', function () {
-    return phpinfo();
-});
+// Route::get('/infophp', function () {
+//     return phpinfo();
+// });
